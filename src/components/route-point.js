@@ -1,4 +1,4 @@
-const createRoutePointTemplate = () => {
+export const createRoutePointTemplate = () => {
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -36,5 +36,3 @@ const createRoutePointTemplate = () => {
     </li>`
   );
 };
-
-export default createRoutePointTemplate;

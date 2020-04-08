@@ -1,4 +1,4 @@
-const createFormEventTemplate = () => {
+export const createFormEventTemplate = () => {
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
@@ -161,5 +161,3 @@ const createFormEventTemplate = () => {
     </form>`
   );
 };
-
-export default createFormEventTemplate;
