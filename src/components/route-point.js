@@ -1,7 +1,6 @@
 export const createRoutePointTemplate = (routePoint) => {
-  const {} = routePoint;
+  const {sity} = routePoint;
 
-  const sity = `Amsterdam`;
   const startTime = `10:30`;
   const endTime = `11:00`;
   const duration = `30M`;

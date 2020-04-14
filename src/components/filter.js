@@ -8,7 +8,7 @@ const createFilterMarkup = (period, isChecked) => {
 };
 
 export const createFilterTemplate = (filters) => {
-  const filtersMarkup = filters.map((it, i) => createFilterMarkup(it.period, i === 0)).join(`\n`);
+  const filtersMarkup = filters.map((filter, i) => createFilterMarkup(filter.period, i === 0)).join(`\n`);
 
   return (
     `<form class="trip-filters" action="#" method="get">

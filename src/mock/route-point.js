@@ -14,7 +14,6 @@ const ActivityMovement = [
   `restaurant`,
 ];
 
-
 const SityItems = [
   `Ansterdam`,
   `Chamonix`,

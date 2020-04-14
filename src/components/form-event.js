@@ -3,18 +3,18 @@ const createTransferMarkup = (movements) => {
     return (
       `<div class="event__type-item">
         <input id="event-type-${movement}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${movement}">
-        <label class="event__type-label  event__type-label--${movement}" for="event-type-taxi-1">${movement}</label>
+        <label class="event__type-label  event__type-label--${movement}" for="event-type-${movement}-1">${movement}</label>
       </div>`
     );
   }).join(`\n`);
 };
 
-const createActivityMarkup = (activitys) => {
-  return activitys.map((activity) => {
+const createActivityMarkup = (activities) => {
+  return activities.map((activity) => {
     return (
       `<div class="event__type-item">
       <input id="event-type-${activity}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${activity}">
-      <label class="event__type-label  event__type-label--${activity}" for="event-type-check-in-1">${activity}</label>
+      <label class="event__type-label  event__type-label--${activity}" for="event-type-${activity}-1">${activity}</label>
     </div>`
     );
   }).join(`\n`);
