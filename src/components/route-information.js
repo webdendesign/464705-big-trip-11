@@ -1,4 +1,4 @@
-const createRouteInformationTemplate = () => {
+export const createRouteInformationTemplate = () => {
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
@@ -14,4 +14,3 @@ const createRouteInformationTemplate = () => {
   );
 };
 
-export default createRouteInformationTemplate;
