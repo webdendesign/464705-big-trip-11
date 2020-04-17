@@ -2,6 +2,7 @@ import RouteInformationComponent from "./components/route-information";
 import SiteMenuComponent from "./components/site-menu";
 import FilterComponent from "./components/filter";
 import SortComponent from "./components/sort";
+import NoPointsComponent from "./components/no-points.js";
 import DaysComponent from "./components/days";
 import FormEventComponent from "./components/form-event";
 import TripDaysComponent from "./components/trip-days";
@@ -15,27 +16,45 @@ const ROUTE_COUNT = 15;
 const SHOWING_ROUTE_COUNT_ON_START = 5;
 
 const renderPoint = (pointListElement, route) => {
-  const onEditButtonClick = () => {
+  const replacePointToEdit = () => {
     pointListElement.replaceChild(routeEditComponent.getElement(), routeComponent.getElement());
   };
 
-  const onEditFormSubmit = (evt) => {
-    evt.preventDefault();
+  const replaceEditToPoint = () => {
     pointListElement.replaceChild(routeComponent.getElement(), routeEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToPoint();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
   };
 
   const routeComponent = new RoutePointComponent(route);
   const editButton = routeComponent.getElement().querySelector(`.event__rollup-btn`);
-  editButton.addEventListener(`click`, onEditButtonClick);
+  editButton.addEventListener(`click`, () => {
+    replacePointToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
   const routeEditComponent = new RouteEditComponent(route);
   const editForm = routeEditComponent.getElement().querySelector(`form`);
-  editForm.addEventListener(`submit`, onEditFormSubmit);
+  editForm.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceEditToPoint();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
   render(pointListElement, routeComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 const renderTrip = (tripEvents, routes) => {
+
+  render(tripEvents, new NoPointsComponent().getElement(), RenderPosition.BEFOREEND);
+
   render(tripEvents, new SortComponent().getElement(), RenderPosition.BEFOREEND);
   render(tripEvents, new FormEventComponent(routes[0]).getElement(), RenderPosition.BEFOREEND);
   render(tripEvents, new DaysComponent().getElement(), RenderPosition.BEFOREEND);
