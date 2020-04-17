@@ -1,4 +1,6 @@
-export const createRoutePointTemplate = (routePoint) => {
+import {createElement} from "../utils.js";
+
+const createRoutePointTemplate = (routePoint) => {
   const {sity} = routePoint;
 
   const startTime = `10:30`;
@@ -45,3 +47,27 @@ export const createRoutePointTemplate = (routePoint) => {
     </li>`
   );
 };
+
+export default class Route {
+  constructor(routePoint) {
+    this._routePoint = routePoint;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createRoutePointTemplate(this._routePoint);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const createTransferMarkup = (movements) => {
   return movements.map((movement) => {
     return (
@@ -43,7 +45,7 @@ const createPhotoMarkup = (photos) => {
   }).join(`\n`);
 };
 
-export const createFormEventTemplate = (routePoint) => {
+const createFormEventTemplate = (routePoint) => {
   const {movement, activity, sity, offerTitle, offerPrice, description, photos} = routePoint;
 
   const drive = `Taxi to`;
@@ -136,3 +138,26 @@ export const createFormEventTemplate = (routePoint) => {
     </form>`
   );
 };
+
+export default class FormEvent {
+  constructor(routePoint) {
+    this._routePoint = routePoint;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFormEventTemplate(this._routePoint);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
