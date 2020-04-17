@@ -3,13 +3,6 @@ import {createElement} from "../utils.js";
 const createRouteEditTemplate = (routePoint) => {
   const {sity} = routePoint;
 
-  // const startTime = `10:30`;
-  // const endTime = `11:00`;
-  // const duration = `30M`;
-  // const price = `20`;
-  // const title = `Order Uber`;
-  // const priceOffer = `20`;
-
   return (
     `<li class="trip-events__item">
       <form class="event  event--edit" action="#" method="post">
