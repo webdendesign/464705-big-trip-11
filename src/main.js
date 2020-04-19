@@ -10,18 +10,18 @@ import RoutePointComponent from "./components/route-point";
 import RouteEditComponent from "./components/route-edit";
 import {generateRoutes} from "./mock/route-point.js";
 import {generateFilters} from "./mock/filter.js";
-import {render, RenderPosition} from "./utils.js";
+import {render, replace, RenderPosition} from "./utils/render.js";
 
 const ROUTE_COUNT = 15;
 const SHOWING_ROUTE_COUNT_ON_START = 5;
 
 const renderPoint = (pointListElement, route) => {
   const replacePointToEdit = () => {
-    pointListElement.replaceChild(routeEditComponent.getElement(), routeComponent.getElement());
+    replace(routeEditComponent, routeComponent);
   };
 
   const replaceEditToPoint = () => {
-    pointListElement.replaceChild(routeComponent.getElement(), routeEditComponent.getElement());
+    replace(routeComponent, routeEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -48,19 +48,19 @@ const renderPoint = (pointListElement, route) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(pointListElement, routeComponent.getElement(), RenderPosition.BEFOREEND);
+  render(pointListElement, routeComponent, RenderPosition.BEFOREEND);
 };
 
 const renderTrip = (tripEvents, routes) => {
 
-  render(tripEvents, new NoPointsComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripEvents, new NoPointsComponent(), RenderPosition.BEFOREEND);
 
-  render(tripEvents, new SortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(tripEvents, new FormEventComponent(routes[0]).getElement(), RenderPosition.BEFOREEND);
-  render(tripEvents, new DaysComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripEvents, new SortComponent(), RenderPosition.BEFOREEND);
+  render(tripEvents, new FormEventComponent(routes[0]), RenderPosition.BEFOREEND);
+  render(tripEvents, new DaysComponent(), RenderPosition.BEFOREEND);
   const tripDaysElement = tripEvents.querySelector(`.trip-days`);
 
-  render(tripDaysElement, new TripDaysComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripDaysElement, new TripDaysComponent(), RenderPosition.BEFOREEND);
   const pointListElement = tripEvents.querySelector(`.trip-events__list`);
 
   let showingPointCount = SHOWING_ROUTE_COUNT_ON_START;
@@ -77,9 +77,9 @@ const tripControls = tripMain.querySelector(`.trip-controls`);
 const filters = generateFilters();
 const routes = generateRoutes(ROUTE_COUNT);
 
-render(tripMain, new RouteInformationComponent().getElement(), RenderPosition.AFTERBEGIN);
-render(tripControls, new SiteMenuComponent().getElement(), RenderPosition.BEFOREEND);
-render(tripControls, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
+render(tripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
+render(tripControls, new SiteMenuComponent(), RenderPosition.BEFOREEND);
+render(tripControls, new FilterComponent(filters), RenderPosition.BEFOREEND);
 
 const sitePageMainElement = document.querySelector(`.page-main`);
 const tripEvents = sitePageMainElement.querySelector(`.trip-events`);
