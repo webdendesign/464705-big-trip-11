@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createTransferMarkup = (movements) => {
   return movements.map((movement) => {
@@ -139,25 +139,14 @@ const createFormEventTemplate = (routePoint) => {
   );
 };
 
-export default class FormEvent {
+export default class FormEvent extends AbstractComponent {
   constructor(routePoint) {
+    super();
+
     this._routePoint = routePoint;
-    this._element = null;
   }
 
   getTemplate() {
     return createFormEventTemplate(this._routePoint);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

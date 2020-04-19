@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createRouteEditTemplate = (routePoint) => {
   const {sity} = routePoint;
@@ -180,26 +180,14 @@ const createRouteEditTemplate = (routePoint) => {
   );
 };
 
-export default class RouteEdit {
+export default class RouteEdit extends AbstractComponent {
   constructor(routePoint) {
-    this._routePoint = routePoint;
+    super();
 
-    this._element = null;
+    this._routePoint = routePoint;
   }
 
   getTemplate() {
     return createRouteEditTemplate(this._routePoint);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
