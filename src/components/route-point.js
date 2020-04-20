@@ -58,4 +58,9 @@ export default class Route extends AbstractComponent {
   getTemplate() {
     return createRoutePointTemplate(this._routePoint);
   }
+
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+  }
 }

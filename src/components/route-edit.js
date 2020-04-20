@@ -190,4 +190,9 @@ export default class RouteEdit extends AbstractComponent {
   getTemplate() {
     return createRouteEditTemplate(this._routePoint);
   }
+
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, handler);
+  }
 }

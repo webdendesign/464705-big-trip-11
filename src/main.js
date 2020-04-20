@@ -34,15 +34,14 @@ const renderPoint = (pointListElement, route) => {
   };
 
   const routeComponent = new RoutePointComponent(route);
-  const editButton = routeComponent.getElement().querySelector(`.event__rollup-btn`);
-  editButton.addEventListener(`click`, () => {
+  const routeEditComponent = new RouteEditComponent(route);
+
+  routeComponent.setEditButtonClickHandler(() => {
     replacePointToEdit();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  const routeEditComponent = new RouteEditComponent(route);
-  const editForm = routeEditComponent.getElement().querySelector(`form`);
-  editForm.addEventListener(`submit`, (evt) => {
+  routeEditComponent.setSubmitHandler((evt) => {
     evt.preventDefault();
     replaceEditToPoint();
     document.removeEventListener(`keydown`, onEscKeyDown);
