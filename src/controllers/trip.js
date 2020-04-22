@@ -58,8 +58,6 @@ export default class TripController {
   render(routes) {
     const container = this._container;
 
-    render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
-
     render(container, this._sortComponent, RenderPosition.BEFOREEND);
     render(container, this._daysComponent, RenderPosition.BEFOREEND);
     const tripDaysElement = container.querySelector(`.trip-days`);
