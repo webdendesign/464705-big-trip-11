@@ -7,7 +7,7 @@ import RoutePointComponent from "../components/route-point.js";
 import RouteEditComponent from "../components/route-edit.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
 
-const SHOWING_ROUTE_COUNT_ON_START = 5;
+const SHOWING_ROUTE_COUNT_ON_START = 10;
 
 const renderPoint = (pointListElement, route) => {
   const replacePointToEdit = () => {
@@ -56,7 +56,14 @@ export default class TripController {
   }
 
   render(routes) {
+    this._routes = routes;
+
     const container = this._container;
+
+    if (this._routes.length === 0) {
+      render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
+      return;
+    }
 
     render(container, this._sortComponent, RenderPosition.BEFOREEND);
     render(container, this._daysComponent, RenderPosition.BEFOREEND);
@@ -65,8 +72,8 @@ export default class TripController {
     render(tripDaysElement, this._tripDaysComponent, RenderPosition.BEFOREEND);
     const pointListElement = container.querySelector(`.trip-events__list`);
 
-    let showingPointCount = SHOWING_ROUTE_COUNT_ON_START;
-    routes.slice(1, showingPointCount)
+    let showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
+    routes.slice(0, showingRouteCount)
       .forEach((route) => {
         renderPoint(pointListElement, route);
       });
