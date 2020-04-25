@@ -8,9 +8,9 @@ import {render, RenderPosition} from "../utils/render.js";
 
 const SHOWING_POINTS_COUNT_ON_START = 5;
 
-const renderPoints = (pointListElement, points, onDataChange) => {
+const renderPoints = (pointListElement, points, onDataChange, onViewChange) => {
   return points.map((point) => {
-    const pointController = new PointController(pointListElement, onDataChange);
+    const pointController = new PointController(pointListElement, onDataChange, onViewChange);
 
     pointController.render(point);
 
@@ -32,6 +32,7 @@ export default class TripController {
     this._tripDaysComponent = new TripDaysComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
   }
 
   render(points) {
@@ -51,7 +52,7 @@ export default class TripController {
     render(tripDaysElement, this._tripDaysComponent, RenderPosition.BEFOREEND);
     const pointListElement = container.querySelector(`.trip-events__list`);
 
-    const newPoints = renderPoints(pointListElement, this._points.slice(0, this._showingPointsCount), this._onDataChange);
+    const newPoints = renderPoints(pointListElement, this._points.slice(0, this._showingPointsCount), this._onDataChange, this._onViewChange);
     this._showedPointControllers = this._showedPointControllers.concat(newPoints);
   }
 
@@ -65,6 +66,10 @@ export default class TripController {
     this._points = [].concat(this._points.slice(0, index), newData, this._points.slice(index + 1));
 
     pointController.render(this._points[index]);
+  }
+
+  _onViewChange() {
+    this._showedPointControllers.forEach((it) => it.setDefaultView());
   }
 
 }

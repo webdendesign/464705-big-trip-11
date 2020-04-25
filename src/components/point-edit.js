@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createButtonMarkup = () => {
   return (
@@ -12,7 +12,7 @@ const createButtonMarkup = () => {
   );
 };
 
-const createRouteEditTemplate = (point) => {
+const createPointEditTemplate = (point) => {
   const {sity} = point;
 
   const favoritesButton = createButtonMarkup(`favorites`, !point.isFavorite);
@@ -188,24 +188,65 @@ const createRouteEditTemplate = (point) => {
   );
 };
 
-export default class RouteEdit extends AbstractComponent {
-  constructor(routePoint) {
+export default class PointEdit extends AbstractSmartComponent {
+  constructor(point) {
     super();
 
-    this._routePoint = routePoint;
+    this._point = point;
+    this._submitHandler = null;
+
+    // this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createRouteEditTemplate(this._routePoint);
+    return createPointEditTemplate(this._point);
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
   }
 
   setSubmitHandler(handler) {
     this.getElement().querySelector(`form`)
       .addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
   }
 
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, handler);
   }
+
+  // _subscribeOnEvents() {
+  //   const element = this.getElement();
+
+  //   element.querySelector(`.card__date-deadline-toggle`)
+  //     .addEventListener(`click`, () => {
+  //       this._isDateShowing = !this._isDateShowing;
+
+  //       this.rerender();
+  //     });
+
+  //   element.querySelector(`.card__repeat-toggle`)
+  //     .addEventListener(`click`, () => {
+  //       this._isRepeatingTask = !this._isRepeatingTask;
+
+  //       this.rerender();
+  //     });
+
+  //   const repeatDays = element.querySelector(`.card__repeat-days`);
+  //   if (repeatDays) {
+  //     repeatDays.addEventListener(`change`, (evt) => {
+  //       this._activeRepeatingDays[evt.target.value] = evt.target.checked;
+
+  //       this.rerender();
+  //     });
+  //   }
+  // }
 }
