@@ -3,8 +3,9 @@ import PointEditComponent from "../components/point-edit.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
 
 export default class PointController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
@@ -21,12 +22,15 @@ export default class PointController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    // this._pointComponent.setFavoritesButtonClickHandler(() => {
-    // });
-
     this._pointEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       this._replaceEditToPoint();
+    });
+
+    this._pointEditComponent.setFavoritesButtonClickHandler(() => {
+      this._onDataChange(this, point, Object.assign({}, point, {
+        isFavorite: !point.isFavorite,
+      }));
     });
 
     render(this._container, this._pointComponent, RenderPosition.BEFOREEND);

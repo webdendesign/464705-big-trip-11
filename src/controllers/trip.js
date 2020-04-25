@@ -6,11 +6,11 @@ import FormEventComponent from "../components/form-event.js";
 import TripDaysComponent from "../components/trip-days.js";
 import {render, RenderPosition} from "../utils/render.js";
 
-const SHOWING_ROUTE_COUNT_ON_START = 10;
+const SHOWING_POINTS_COUNT_ON_START = 5;
 
-const renderPoints = (pointListElement, points) => {
+const renderPoints = (pointListElement, points, onDataChange) => {
   return points.map((point) => {
-    const pointController = new PointController(pointListElement);
+    const pointController = new PointController(pointListElement, onDataChange);
 
     pointController.render(point);
 
@@ -24,12 +24,14 @@ export default class TripController {
 
     this._points = [];
     this._showedPointControllers = [];
-    this._showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
+    this._showingPointsCount = SHOWING_POINTS_COUNT_ON_START;
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
     this._formEventComponent = new FormEventComponent();
     this._daysComponent = new DaysComponent();
     this._tripDaysComponent = new TripDaysComponent();
+
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   render(points) {
@@ -49,12 +51,20 @@ export default class TripController {
     render(tripDaysElement, this._tripDaysComponent, RenderPosition.BEFOREEND);
     const pointListElement = container.querySelector(`.trip-events__list`);
 
-    // let showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
-    // points.slice(0, showingRouteCount)
-    //   .forEach((pointe) => {
-    //     renderPoints(pointListElement, pointe);
-    //   });
-    const newPoints = renderPoints(pointListElement, this._points.slice(0, this._showingRouteCount));
+    const newPoints = renderPoints(pointListElement, this._points.slice(0, this._showingPointsCount), this._onDataChange);
     this._showedPointControllers = this._showedPointControllers.concat(newPoints);
   }
+
+  _onDataChange(pointController, oldData, newData) {
+    const index = this._points.findIndex((it) => it === oldData);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._points = [].concat(this._points.slice(0, index), newData, this._points.slice(index + 1));
+
+    pointController.render(this._points[index]);
+  }
+
 }

@@ -6,7 +6,7 @@ import {generateRoutes} from "./mock/route-point.js";
 import {generateFilters} from "./mock/filter.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-const ROUTE_COUNT = 5;
+const ROUTE_COUNT = 10;
 
 const pageHeaderElement = document.querySelector(`.page-header`);
 const tripMain = pageHeaderElement.querySelector(`.trip-main`);
