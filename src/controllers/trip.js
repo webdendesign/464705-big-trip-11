@@ -1,53 +1,30 @@
 import SortComponent from "../components/sort.js";
 import NoPointsComponent from "../components/no-points.js";
 import DaysComponent from "../components/days.js";
+import PointController from "./point.js";
 import FormEventComponent from "../components/form-event.js";
 import TripDaysComponent from "../components/trip-days.js";
-import RoutePointComponent from "../components/route-point.js";
-import RouteEditComponent from "../components/route-edit.js";
-import {render, replace, RenderPosition} from "../utils/render.js";
+import {render, RenderPosition} from "../utils/render.js";
 
 const SHOWING_ROUTE_COUNT_ON_START = 10;
 
-const renderPoint = (pointListElement, route) => {
-  const replacePointToEdit = () => {
-    replace(routeEditComponent, routeComponent);
-  };
+const renderPoints = (pointListElement, points) => {
+  return points.map((point) => {
+    const pointController = new PointController(pointListElement);
 
-  const replaceEditToPoint = () => {
-    replace(routeComponent, routeEditComponent);
-  };
+    pointController.render(point);
 
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const routeComponent = new RoutePointComponent(route);
-  const routeEditComponent = new RouteEditComponent(route);
-
-  routeComponent.setEditButtonClickHandler(() => {
-    replacePointToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
+    return pointController;
   });
-
-  routeEditComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceEditToPoint();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(pointListElement, routeComponent, RenderPosition.BEFOREEND);
 };
 
 export default class TripController {
   constructor(container) {
     this._container = container;
 
+    this._points = [];
+    this._showedPointControllers = [];
+    this._showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
     this._formEventComponent = new FormEventComponent();
@@ -55,12 +32,12 @@ export default class TripController {
     this._tripDaysComponent = new TripDaysComponent();
   }
 
-  render(routes) {
-    this._routes = routes;
+  render(points) {
+    this._points = points;
 
     const container = this._container;
 
-    if (this._routes.length === 0) {
+    if (this._points.length === 0) {
       render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
       return;
     }
@@ -72,10 +49,12 @@ export default class TripController {
     render(tripDaysElement, this._tripDaysComponent, RenderPosition.BEFOREEND);
     const pointListElement = container.querySelector(`.trip-events__list`);
 
-    let showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
-    routes.slice(0, showingRouteCount)
-      .forEach((route) => {
-        renderPoint(pointListElement, route);
-      });
+    // let showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
+    // points.slice(0, showingRouteCount)
+    //   .forEach((pointe) => {
+    //     renderPoints(pointListElement, pointe);
+    //   });
+    const newPoints = renderPoints(pointListElement, this._points.slice(0, this._showingRouteCount));
+    this._showedPointControllers = this._showedPointControllers.concat(newPoints);
   }
 }
