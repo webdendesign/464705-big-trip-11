@@ -195,7 +195,6 @@ export default class PointEdit extends AbstractSmartComponent {
     this._point = point;
     this._submitHandler = null;
 
-    // this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -222,31 +221,4 @@ export default class PointEdit extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, handler);
   }
-
-  // _subscribeOnEvents() {
-  //   const element = this.getElement();
-
-  //   element.querySelector(`.card__date-deadline-toggle`)
-  //     .addEventListener(`click`, () => {
-  //       this._isDateShowing = !this._isDateShowing;
-
-  //       this.rerender();
-  //     });
-
-  //   element.querySelector(`.card__repeat-toggle`)
-  //     .addEventListener(`click`, () => {
-  //       this._isRepeatingTask = !this._isRepeatingTask;
-
-  //       this.rerender();
-  //     });
-
-  //   const repeatDays = element.querySelector(`.card__repeat-days`);
-  //   if (repeatDays) {
-  //     repeatDays.addEventListener(`change`, (evt) => {
-  //       this._activeRepeatingDays[evt.target.value] = evt.target.checked;
-
-  //       this.rerender();
-  //     });
-  //   }
-  // }
 }
