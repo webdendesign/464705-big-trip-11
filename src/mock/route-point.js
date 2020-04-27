@@ -31,6 +31,16 @@ const SityItems = [
   `Dallas`,
 ];
 
+const PriceItems = [
+  26,
+  47,
+  3,
+  7,
+  76,
+  2,
+  55
+];
+
 const OfferTitle = [
   `Add luggage`,
   `Switch to comfort class`,
@@ -47,8 +57,8 @@ const Photos = [
   `img/photos/5.jpg`,
 ];
 
-const getRandomSityItem = (arraySity) => {
-  return arraySity[Math.floor(Math.random() * arraySity.length)];
+const getRandomItem = (array) => {
+  return array[Math.floor(Math.random() * array.length)];
 };
 
 const text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`;
@@ -58,7 +68,8 @@ const generateRoute = () => {
   return {
     movement: ChooseMovement,
     activity: ActivityMovement,
-    sity: getRandomSityItem(SityItems),
+    sity: getRandomItem(SityItems),
+    price: getRandomItem(PriceItems),
     offerTitle: OfferTitle,
     offerPrice: `40`,
     description: text,

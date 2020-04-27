@@ -1,12 +1,11 @@
 import AbstractComponent from "./abstract-component.js";
 
 const createRoutePointTemplate = (routePoint) => {
-  const {sity} = routePoint;
+  const {sity, price} = routePoint;
 
   const startTime = `10:30`;
   const endTime = `11:00`;
   const duration = `30M`;
-  const price = `20`;
   const title = `Order Uber`;
   const priceOffer = `20`;
 
