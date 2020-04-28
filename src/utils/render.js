@@ -32,3 +32,17 @@ export const replace = (newComponent, oldComponent) => {
     parentElement.replaceChild(newElement, oldElement);
   }
 };
+
+export const getRandomInt = (min, max) => {
+  return min + Math.floor(max * Math.random());
+};
+
+export const getRandomDate = () => {
+  const targetDate = new Date();
+  const sign = Math.random() > 0.5 ? 1 : -1;
+  const diffValue = sign * getRandomInt(0, 7);
+
+  targetDate.setDate(targetDate.getDate() + diffValue);
+
+  return targetDate;
+};

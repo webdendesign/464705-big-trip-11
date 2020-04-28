@@ -45,19 +45,19 @@ const renderPoint = (pointListElement, route) => {
   render(pointListElement, routeComponent, RenderPosition.BEFOREEND);
 };
 
-const getSortedTasks = (tasks, sortType, from, to) => {
+const getSortedTasks = (routes, sortType, from, to) => {
   let sortedTasks = [];
-  const showingTasks = tasks.slice();
+  const showingRoutes = routes.slice();
 
   switch (sortType) {
-    case SortType.DATE_UP:
-      sortedTasks = showingTasks.sort((a, b) => a.dueDate - b.dueDate);
+    case SortType.TIME:
+      sortedTasks = showingRoutes.sort((a, b) => b.durationInMs - a.durationInMs);
       break;
-    case SortType.DATE_DOWN:
-      sortedTasks = showingTasks.sort((a, b) => b.dueDate - a.dueDate);
+    case SortType.PRICE:
+      sortedTasks = showingRoutes.sort((a, b) => b.price - a.price);
       break;
     case SortType.DEFAULT:
-      sortedTasks = showingTasks;
+      sortedTasks = showingRoutes;
       break;
   }
 
