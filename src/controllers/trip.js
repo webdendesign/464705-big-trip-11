@@ -1,4 +1,4 @@
-import SortComponent from "../components/sort.js";
+import SortComponent, {SortType} from "../components/sort.js";
 import NoPointsComponent from "../components/no-points.js";
 import DaysComponent from "../components/days.js";
 import FormEventComponent from "../components/form-event.js";
@@ -8,6 +8,7 @@ import RouteEditComponent from "../components/route-edit.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
 
 const SHOWING_ROUTE_COUNT_ON_START = 10;
+const SHOWING_TASKS_COUNT_BY_BUTTON = 10;
 
 const renderPoint = (pointListElement, route) => {
   const replacePointToEdit = () => {
@@ -44,6 +45,25 @@ const renderPoint = (pointListElement, route) => {
   render(pointListElement, routeComponent, RenderPosition.BEFOREEND);
 };
 
+const getSortedTasks = (routes, sortType, from, to) => {
+  let sortedTasks = [];
+  const showingRoutes = routes.slice();
+
+  switch (sortType) {
+    case SortType.TIME:
+      sortedTasks = showingRoutes.sort((a, b) => b.durationInMs - a.durationInMs);
+      break;
+    case SortType.PRICE:
+      sortedTasks = showingRoutes.sort((a, b) => b.price - a.price);
+      break;
+    case SortType.DEFAULT:
+      sortedTasks = showingRoutes;
+      break;
+  }
+
+  return sortedTasks.slice(from, to);
+};
+
 export default class TripController {
   constructor(container) {
     this._container = container;
@@ -73,9 +93,24 @@ export default class TripController {
     const pointListElement = container.querySelector(`.trip-events__list`);
 
     let showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
+
     routes.slice(0, showingRouteCount)
       .forEach((route) => {
         renderPoint(pointListElement, route);
       });
+
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+      showingRouteCount = SHOWING_TASKS_COUNT_BY_BUTTON;
+
+      const sortedRoutes = getSortedTasks(routes, sortType, 0, showingRouteCount);
+
+      pointListElement.innerHTML = ``;
+
+      sortedRoutes.slice(0, showingRouteCount)
+        .forEach((task) => {
+          renderPoint(pointListElement, task);
+        });
+
+    });
   }
 }

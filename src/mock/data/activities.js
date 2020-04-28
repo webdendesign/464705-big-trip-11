@@ -1,0 +1,11 @@
+export const Activities = new Map()
+  .set(`taxi`, `Take a taxi`)
+  .set(`bus`, `Bus journey`)
+  .set(`train`, `Take a train`)
+  .set(`flight`, `Flight to`)
+  .set(`ship`, `Cruise`)
+  .set(`transport`, `Take a riksha`)
+  .set(`drive`, `Rent a car`)
+  .set(`check-in`, `Check in`)
+  .set(`sightseeing`, `See sightseeing`)
+  .set(`restaurant`, `Reserve a table in restaurant`);
