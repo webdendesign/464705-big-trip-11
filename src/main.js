@@ -2,18 +2,22 @@ import TripController from "./controllers/trip.js";
 import RouteInformationComponent from "./components/route-information.js";
 import SiteMenuComponent from "./components/site-menu.js";
 import FilterComponent from "./components/filter.js";
-import {generateRoutes} from "./mock/route-point.js";
+import {generatePoints} from "./mock/point.js";
 import {generateFilters} from "./mock/filter.js";
 import {render, RenderPosition} from "./utils/render.js";
 
+<<<<<<< HEAD
 const ROUTE_COUNT = 10;
+=======
+const ROUTE_COUNT = 15;
+>>>>>>> e2c8177801b985d5e1f31f5063d87e52e6e7f164
 
 const pageHeaderElement = document.querySelector(`.page-header`);
 const tripMain = pageHeaderElement.querySelector(`.trip-main`);
 const tripControls = tripMain.querySelector(`.trip-controls`);
 
 const filters = generateFilters();
-const routes = generateRoutes(ROUTE_COUNT);
+const routes = generatePoints(ROUTE_COUNT);
 
 render(tripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
 render(tripControls, new SiteMenuComponent(), RenderPosition.BEFOREEND);
