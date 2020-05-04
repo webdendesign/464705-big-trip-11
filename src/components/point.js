@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
 
-const createRoutePointTemplate = (point) => {
+const createPointTemplate = (point) => {
   const {type, city, startTime, endTime, duration, price} = point;
 
   const title = `Order Uber`;
@@ -44,15 +44,15 @@ const createRoutePointTemplate = (point) => {
   );
 };
 
-export default class Route extends AbstractComponent {
-  constructor(routePoint) {
+export default class Point extends AbstractComponent {
+  constructor(point) {
     super();
 
-    this._routePoint = routePoint;
+    this._point = point;
   }
 
   getTemplate() {
-    return createRoutePointTemplate(this._routePoint);
+    return createPointTemplate(this._point);
   }
 
   setEditButtonClickHandler(handler) {

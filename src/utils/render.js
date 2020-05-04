@@ -33,6 +33,11 @@ export const replace = (newComponent, oldComponent) => {
   }
 };
 
+export const remove = (component) => {
+  component.getElement().remove();
+  component.removeElement();
+};
+
 export const getRandomInt = (min, max) => {
   return min + Math.floor(max * Math.random());
 };
