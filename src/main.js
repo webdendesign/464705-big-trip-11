@@ -13,7 +13,7 @@ const tripMain = pageHeaderElement.querySelector(`.trip-main`);
 const tripControls = tripMain.querySelector(`.trip-controls`);
 
 const filters = generateFilters();
-const routes = generatePoints(ROUTE_COUNT);
+const points = generatePoints(ROUTE_COUNT);
 
 render(tripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
 render(tripControls, new SiteMenuComponent(), RenderPosition.BEFOREEND);
@@ -24,4 +24,4 @@ const tripEvents = sitePageMainElement.querySelector(`.trip-events`);
 
 const tripController = new TripController(tripEvents);
 
-tripController.render(routes);
+tripController.render(points);
