@@ -45,8 +45,8 @@ export default class PointController {
     });
 
     if (oldPointEditComponent && oldPointComponent) {
-      replace(this._taskComponent, oldPointComponent);
-      replace(this._taskEditComponent, oldPointEditComponent);
+      replace(this._pointComponent, oldPointComponent);
+      replace(this._pointEditComponent, oldPointEditComponent);
     } else {
       render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
     }

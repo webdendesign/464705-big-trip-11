@@ -59,8 +59,7 @@ export default class TripController {
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
 
-
-    // this._onViewChange = this._onViewChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
   }
 
   render(points) {
@@ -105,33 +104,33 @@ export default class TripController {
 
     pointListElement.innerHTML = ``;
 
-    const newPoints = renderPoints(pointListElement, sortedPoints, this._onDataChange);
+    const newPoints = renderPoints(pointListElement, sortedPoints, this._onDataChange, this._onViewChange);
     this._showedPointControllers = newPoints;
 
   }
 
-  // _onViewChange() {
-  //   this._showedPointControllers.forEach((it) => it.setDefaultView());
-  //   let showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
+  _onViewChange() {
+    this._showedPointControllers.forEach((it) => it.setDefaultView());
+    //   let showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
 
-  //   routes.slice(0, showingRouteCount)
-  //     .forEach((route) => {
-  //       renderPoint(pointListElement, route);
-  //     });
+    //   routes.slice(0, showingRouteCount)
+    //     .forEach((route) => {
+    //       renderPoint(pointListElement, route);
+    //     });
 
-  //   this._sortComponent.setSortTypeChangeHandler((sortType) => {
-  //     showingRouteCount = SHOWING_TASKS_COUNT_BY_BUTTON;
+    //   this._sortComponent.setSortTypeChangeHandler((sortType) => {
+    //     showingRouteCount = SHOWING_TASKS_COUNT_BY_BUTTON;
 
-  //     const sortedRoutes = getSortedTasks(routes, sortType, 0, showingRouteCount);
+    //     const sortedRoutes = getSortedTasks(routes, sortType, 0, showingRouteCount);
 
-  //     pointListElement.innerHTML = ``;
+    //     pointListElement.innerHTML = ``;
 
-  //     sortedRoutes.slice(0, showingRouteCount)
-  //       .forEach((task) => {
-  //         renderPoint(pointListElement, task);
-  //       });
+    //     sortedRoutes.slice(0, showingRouteCount)
+    //       .forEach((task) => {
+    //         renderPoint(pointListElement, task);
+    //       });
 
-  //   });
-  // }
+    //   });
+  }
 
 }

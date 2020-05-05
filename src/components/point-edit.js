@@ -1,5 +1,8 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
+import {getCities} from '../mock/city';
+
+
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
@@ -17,7 +20,9 @@ const createButtonMarkup = () => {
 };
 
 const createPointEditTemplate = (point) => {
-  const {sity} = point;
+  const {type, sity} = point;
+  const cities = getCities();
+
 
   const favoritesButton = createButtonMarkup(`favorites`, !point.isFavorite);
 
@@ -28,7 +33,7 @@ const createPointEditTemplate = (point) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type.img}" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -99,9 +104,7 @@ const createPointEditTemplate = (point) => {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${sity}" list="destination-list-1">
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
+              ${cities.map((item) => `<option value="${item.name}"></option>`)}
             </datalist>
           </div>
 
