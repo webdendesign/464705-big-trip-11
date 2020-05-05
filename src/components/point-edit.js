@@ -1,5 +1,9 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
+import flatpickr from "flatpickr";
+
+import "flatpickr/dist/flatpickr.min.css";
+
 const createButtonMarkup = () => {
   return (
     `<input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
@@ -193,7 +197,11 @@ export default class PointEdit extends AbstractSmartComponent {
     super();
 
     this._point = point;
+
+    this._flatpickr = null;
     this._submitHandler = null;
+
+    this._applyFlatpickr();
 
   }
 
@@ -208,6 +216,8 @@ export default class PointEdit extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
+
+    this._applyFlatpickr();
   }
 
   setSubmitHandler(handler) {
@@ -215,6 +225,24 @@ export default class PointEdit extends AbstractSmartComponent {
       .addEventListener(`submit`, handler);
 
     this._submitHandler = handler;
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      // При своем создании `flatpickr` дополнительно создает вспомогательные DOM-элементы.
+      // Что бы их удалять, нужно вызывать метод `destroy` у созданного инстанса `flatpickr`.
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    if (this._isDateShowing) {
+      const dateElement = this.getElement().querySelector(`.card__date`);
+      this._flatpickr = flatpickr(dateElement, {
+        altInput: true,
+        allowInput: true,
+        defaultDate: this._task.dueDate || `today`,
+      });
+    }
   }
 
   setFavoritesButtonClickHandler(handler) {
