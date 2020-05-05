@@ -38,7 +38,7 @@ export default class PointController {
       this._replaceEditToPoint();
     });
 
-    this._pointEditComponent.setFavoritesButtonClickHandler(() => {
+    this._pointEditComponent.setFavoriteButtonClickHandler(() => {
       this._onDataChange(this, point, Object.assign({}, point, {
         isFavorite: !point.isFavorite,
       }));
