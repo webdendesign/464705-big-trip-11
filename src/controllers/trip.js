@@ -8,7 +8,6 @@ import TripEventsComponent from "../components/trip-events.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 const SHOWING_POINTS_COUNT_ON_START = 18;
-// const SHOWING_TASKS_COUNT_BY_BUTTON = 10;
 
 const renderPoints = (pointListElement, points, onDataChange, onViewChange) => {
   return points.map((point) => {
@@ -40,10 +39,10 @@ const getSortedPoints = (points, sortType, from, to) => {
 };
 
 export default class TripController {
-  constructor(container) {
+  constructor(container, pointsModel) {
     this._container = container;
+    this._tasksModel = pointsModel;
 
-    this._points = [];
     this._showedPointControllers = [];
     this._showingPointsCount = SHOWING_POINTS_COUNT_ON_START;
     this._noPointsComponent = new NoPointsComponent();
@@ -62,10 +61,11 @@ export default class TripController {
     this._onViewChange = this._onViewChange.bind(this);
   }
 
-  render(points) {
-    this._points = points;
+  render() {
 
     const container = this._container;
+
+    const points = this._pointsModel.getPoints();
 
     if (this._points.length === 0) {
       render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
@@ -78,28 +78,28 @@ export default class TripController {
     render(container, this._dayComponent, RenderPosition.BEFOREEND);
     render(container, this._tripEventsComponent, RenderPosition.BEFOREEND);
 
+    this._renderPoints(points.slice(0, this._showingPointsCount));
+  }
+
+  _renderPoints(points) {
     const pointListElement = this._tripEventsComponent.getElement();
 
-    const newPoints = renderPoints(pointListElement, this._points.slice(0, this._showingPointsCount), this._onDataChange, this._onViewChange);
+    const newPoints = renderPoints(pointListElement, points, this._onDataChange, this._onViewChange);
     this._showedPointControllers = this._showedPointControllers.concat(newPoints);
   }
 
   _onDataChange(pointController, oldData, newData) {
-    const index = this._points.findIndex((it) => it === oldData);
+    const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
 
-    if (index === -1) {
-      return;
+    if (isSuccess === -1) {
+      pointController.render(newData);
     }
-
-    this._points = [].concat(this._points.slice(0, index), newData, this._points.slice(index + 1));
-
-    pointController.render(this._points[index]);
   }
 
   _onSortTypeChange(sortType) {
     this._showingPointsCount = SHOWING_POINTS_COUNT_ON_START;
 
-    const sortedPoints = getSortedPoints(this._points, sortType, 0, this._showingPointsCount);
+    const sortedPoints = getSortedPoints(this._pointsModel.getPoints(), sortType, 0, this._showingPointsCount);
     const pointListElement = this._tripEventsComponent.getElement();
 
     pointListElement.innerHTML = ``;
@@ -111,26 +111,5 @@ export default class TripController {
 
   _onViewChange() {
     this._showedPointControllers.forEach((it) => it.setDefaultView());
-    //   let showingRouteCount = SHOWING_ROUTE_COUNT_ON_START;
-
-    //   routes.slice(0, showingRouteCount)
-    //     .forEach((route) => {
-    //       renderPoint(pointListElement, route);
-    //     });
-
-    //   this._sortComponent.setSortTypeChangeHandler((sortType) => {
-    //     showingRouteCount = SHOWING_TASKS_COUNT_BY_BUTTON;
-
-    //     const sortedRoutes = getSortedTasks(routes, sortType, 0, showingRouteCount);
-
-    //     pointListElement.innerHTML = ``;
-
-    //     sortedRoutes.slice(0, showingRouteCount)
-    //       .forEach((task) => {
-    //         renderPoint(pointListElement, task);
-    //       });
-
-    //   });
   }
-
 }
