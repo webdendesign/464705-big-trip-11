@@ -1,6 +1,9 @@
 import PointComponent from "../components/point.js";
 import PointEditComponent from "../components/point-edit.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
+import {Types} from '../mock/data/types';
+import {Activities} from '../mock/data/activities';
+
 
 const Mode = {
   DEFAULT: `default`,
@@ -17,8 +20,14 @@ export default class PointController {
 
     this._pointComponent = null;
     this._pointEditComponent = null;
+    this._prevousEvent = null;
+    this._currentEvent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+  }
+
+  _commitChanges() {
+    this._onDataChange(this, this._currentEvent, Object.assign({}, this._currentEvent, this._pointEditComponent.getState()));
   }
 
   render(point) {
@@ -38,15 +47,21 @@ export default class PointController {
       this._replaceEditToPoint();
     });
 
-    this._pointEditComponent.setFavoritesButtonClickHandler(() => {
+    this._pointEditComponent.selectTypeHandler((evt) => {
+      this._pointEditComponent._type = Types.find((x) => x.name === evt.target.value);
+      this._pointEditComponent._name = Activities.get(this._pointEditComponent._type.name);
+      this._commitChanges();
+    });
+
+    this._pointEditComponent.setFavoriteButtonClickHandler(() => {
       this._onDataChange(this, point, Object.assign({}, point, {
         isFavorite: !point.isFavorite,
       }));
     });
 
     if (oldPointEditComponent && oldPointComponent) {
-      replace(this._taskComponent, oldPointComponent);
-      replace(this._taskEditComponent, oldPointEditComponent);
+      replace(this._pointComponent, oldPointComponent);
+      replace(this._pointEditComponent, oldPointEditComponent);
     } else {
       render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
     }

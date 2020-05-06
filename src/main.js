@@ -6,14 +6,14 @@ import {generatePoints} from "./mock/point.js";
 import {generateFilters} from "./mock/filter.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-const ROUTE_COUNT = 15;
+const POINT_COUNT = 15;
 
 const pageHeaderElement = document.querySelector(`.page-header`);
 const tripMain = pageHeaderElement.querySelector(`.trip-main`);
 const tripControls = tripMain.querySelector(`.trip-controls`);
 
 const filters = generateFilters();
-const points = generatePoints(ROUTE_COUNT);
+const points = generatePoints(POINT_COUNT);
 
 render(tripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
 render(tripControls, new SiteMenuComponent(), RenderPosition.BEFOREEND);
