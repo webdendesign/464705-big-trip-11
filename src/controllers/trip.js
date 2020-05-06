@@ -41,7 +41,7 @@ const getSortedPoints = (points, sortType, from, to) => {
 export default class TripController {
   constructor(container, pointsModel) {
     this._container = container;
-    this._tasksModel = pointsModel;
+    this._pointsModel = pointsModel;
 
     this._showedPointControllers = [];
     this._showingPointsCount = SHOWING_POINTS_COUNT_ON_START;
@@ -67,7 +67,7 @@ export default class TripController {
 
     const points = this._pointsModel.getPoints();
 
-    if (this._points.length === 0) {
+    if (points.length === 0) {
       render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
       return;
     }
