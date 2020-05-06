@@ -48,7 +48,7 @@ const renderOption = (option, currentEvent) => {
 };
 
 const createPointEditTemplate = (point) => {
-  const {type, sity, startTime, endTime, price} = point;
+  const {type, city, startTime, endTime, price} = point;
   const cities = getCities();
 
 
@@ -82,7 +82,7 @@ const createPointEditTemplate = (point) => {
             <label class="event__label  event__${type.name}" for="event-destination-1">
               ${name}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${sity}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
             <datalist id="destination-list-1">
               ${cities.map((item) => `<option value="${item.name}"></option>`)}
             </datalist>
@@ -126,6 +126,15 @@ const createPointEditTemplate = (point) => {
               ${Options.filter((option) => option.type === type.name).map((option) => renderOption(option, point)).join(`\n`)}
             </div>
           </section>
+          <section class="event__section  event__section--destination">
+                <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+                <p class="event__destination-description">${city.description}</p>
+
+                <div class="event__photos-container">
+                  <div class="event__photos-tape">
+                  </div>
+                </div>
+              </section>
         </section>
       </form>
     </li>`
@@ -164,6 +173,14 @@ export default class PointEdit extends AbstractSmartComponent {
       .addEventListener(`submit`, handler);
 
     this._submitHandler = handler;
+  }
+
+  selectTypeHandler(handler) {
+    this._selectTypeHandler = handler;
+    const radioButtons = this.getElement().querySelectorAll(`.event__type-input`);
+    radioButtons.forEach((button) => {
+      button.addEventListener(`change`, handler);
+    });
   }
 
   _applyFlatpickr() {

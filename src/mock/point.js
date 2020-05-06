@@ -2,6 +2,7 @@ import {getRandomInt, getRandomDate} from '../utils/render';
 
 import {Types} from './data/types';
 import {Activities} from './data/activities';
+import {Options} from './data/options';
 
 import moment from 'moment';
 
@@ -42,15 +43,21 @@ const getRandomType = (types) => {
   return types[Math.floor(Math.random() * types.length)];
 };
 
-const randomType = getRandomType(Types);
-
 const getRandomItem = (array) => {
   return array[Math.floor(Math.random() * array.length)];
+};
+
+const getRandomOptions = (type, options) => {
+  const randomInt = getRandomInt(0, 4);
+  const randomOptions = options.filter((item) => type.name === item.type).slice(0, getRandomInt(1, randomInt));
+  return randomOptions;
 };
 
 const text = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`;
 
 const generatePoint = () => {
+  const randomType = getRandomType(Types);
+  const randomOptions = getRandomOptions(randomType, Options);
 
   const startTimeRandom = moment(getRandomDate());
   const endTimeRandom = startTimeRandom.clone().add(getRandomInt(1, 4), `h`).add(getRandomInt(1, 60), `m`);
@@ -70,6 +77,7 @@ const generatePoint = () => {
     durationInMs: eventDuration,
     price: randomPrice,
     offerTitle: OfferTitle,
+    options: randomOptions,
     description: text,
     photos: Photos,
   };
