@@ -1,8 +1,8 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
-import {getCities} from '../mock/city';
-import {Types} from '../mock/data/types';
-import {Options} from '../mock/data/options';
+import {getCities} from '../mocks/city';
+import {Types} from '../mocks/data/types';
+import {Options} from '../mocks/data/options';
 
 
 import flatpickr from "flatpickr";

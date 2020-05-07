@@ -1,8 +1,8 @@
 import PointComponent from "../components/point.js";
 import PointEditComponent from "../components/point-edit.js";
 import {render, replace, remove, RenderPosition} from "../utils/render.js";
-import {Types} from '../mock/data/types';
-import {Activities} from '../mock/data/activities';
+import {Types} from '../mocks/data/types';
+import {Activities} from '../mocks/data/activities';
 
 
 const Mode = {
