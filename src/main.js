@@ -1,10 +1,9 @@
 import TripController from "./controllers/trip.js";
 import RouteInformationComponent from "./components/route-information.js";
 import SiteMenuComponent from "./components/site-menu.js";
-import FilterComponent from "./components/filter.js";
+import FilterController from "./controllers/filter.js";
 import PointsModel from "./models/points.js";
 import {generatePoints} from "./mock/point.js";
-import {generateFilters} from "./mock/filter.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 const POINT_COUNT = 15;
@@ -16,11 +15,12 @@ const tripControls = tripMain.querySelector(`.trip-controls`);
 const points = generatePoints(POINT_COUNT);
 const pointsModel = new PointsModel();
 pointsModel.setPoints(points);
-const filters = generateFilters();
 
 render(tripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
 render(tripControls, new SiteMenuComponent(), RenderPosition.BEFOREEND);
-render(tripControls, new FilterComponent(filters), RenderPosition.BEFOREEND);
+const filterController = new FilterController(pointsModel);
+filterController.render();
+
 
 const sitePageMainElement = document.querySelector(`.page-main`);
 const tripEvents = sitePageMainElement.querySelector(`.trip-events`);

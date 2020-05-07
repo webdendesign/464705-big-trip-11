@@ -1,6 +1,6 @@
 import PointComponent from "../components/point.js";
 import PointEditComponent from "../components/point-edit.js";
-import {render, replace, RenderPosition} from "../utils/render.js";
+import {render, replace, remove, RenderPosition} from "../utils/render.js";
 import {Types} from '../mock/data/types';
 import {Activities} from '../mock/data/activities';
 
@@ -72,6 +72,13 @@ export default class PointController {
       this._replaceEditToPoint();
     }
   }
+
+  destroy() {
+    remove(this._pointEditComponent);
+    remove(this._pointComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
 
   _replaceEditToPoint() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);

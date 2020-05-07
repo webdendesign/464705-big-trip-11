@@ -1,20 +1,33 @@
-import {getPointsByFilter} from "../utils/filter.js";
 import {FilterType} from "../const.js";
+import moment from 'moment';
 
 export default class Points {
   constructor() {
     this._points = [];
-    this._activeFilterType = FilterType.EVERYTHYNG;
+    this._activeFilterType = FilterType.ALL;
 
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
   }
 
   getPoints() {
-    return getPointsByFilter(this._points, this._activeFilterType);
+    return this._getFilteredPoints;
   }
 
-  getPointsEverythyng() {
+  _getFilteredPoints() {
+    const nowDate = moment();
+    switch (this._activeFilterType) {
+      case FilterType.ALL:
+        return this._points;
+      case FilterType.FUTURE:
+        return this._points.filter((item) => item.startTime > nowDate);
+      case FilterType.PAST:
+        return this._points.filter((item) => item.startTime < nowDate);
+    }
+    return this._points;
+  }
+
+  getPointsAll() {
     return this._points;
   }
 
@@ -26,6 +39,20 @@ export default class Points {
   setFilter(filterType) {
     this._activeFilterType = filterType;
     this._callHandlers(this._filterChangeHandlers);
+  }
+
+  removePoint(id) {
+    const index = this._points.findIndex((it) => it.id === id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    this._points = [].concat(this._points.slice(0, index), this._points.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers);
+
+    return true;
   }
 
   updatePoint(id, point) {
@@ -40,6 +67,15 @@ export default class Points {
     this._callHandlers(this._dataChangeHandlers);
 
     return true;
+  }
+
+  addPoint(point) {
+    this._points = [].concat(point, this._points);
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
   }
 
   setDataChangeHandler(handler) {

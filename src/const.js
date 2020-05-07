@@ -1,5 +1,5 @@
 export const FilterType = {
-  EVERYTHYNG: `everythyng`,
+  ALL: `everything`,
   FUTURE: `future`,
   PAST: `past`,
 };
