@@ -1,4 +1,5 @@
 import {createElement} from "../utils/render.js";
+const HIDDEN_CLASS = `visually-hidden`;
 
 export default class AbstractComponent {
   constructor() {
@@ -21,7 +22,27 @@ export default class AbstractComponent {
     return this._element;
   }
 
+  setClickHandler(element, handler) {
+    this.getElement().querySelector(element).addEventListener(`click`, handler);
+  }
+
   removeElement() {
     this._element = null;
+  }
+
+  clearElement() {
+    this.getElement().innerHTML = ``;
+  }
+
+  show() {
+    if (this._element) {
+      this._element.classList.remove(HIDDEN_CLASS);
+    }
+  }
+
+  hide() {
+    if (this._element) {
+      this._element.classList.add(HIDDEN_CLASS);
+    }
   }
 }
