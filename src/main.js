@@ -1,27 +1,60 @@
-import TripController from "./controllers/trip.js";
-import RouteInformationComponent from "./components/route-information.js";
-import SiteMenuComponent from "./components/site-menu.js";
-import FilterComponent from "./components/filter.js";
-import {generatePoints} from "./mock/point.js";
-import {generateFilters} from "./mock/filter.js";
-import {render, RenderPosition} from "./utils/render.js";
+import {generatePoints, getTotalPrice} from './mocks/point.js';
+import {render, RenderPosition} from './utils/render.js';
+import SiteMenu, {MenuItem} from './components/site-menu.js';
+import Total from './components/total.js';
+import RouteInformation from './components/route-information.js';
+import NoPoints from './components/no-points.js';
+import TripController from './controllers/trip.js';
+import PointModel from './models/points.js';
+import FilterController from './controllers/filter.js';
+import TripBoard from './components/trip-board.js';
 
-const POINT_COUNT = 15;
+const points = generatePoints(5);
 
-const pageHeaderElement = document.querySelector(`.page-header`);
-const tripMain = pageHeaderElement.querySelector(`.trip-main`);
-const tripControls = tripMain.querySelector(`.trip-controls`);
+const model = new PointModel(points);
+const btnNew = document.querySelector(`.trip-main__event-add-btn`);
+const [menuTitle, filterTitle] = document.querySelector(`.trip-controls`).children;
+const trip = document.querySelector(`.trip-info`);
+const body = document.querySelector(`.page-body_main`);
+const trips = document.querySelector(`.trip-events`);
+const tripBoard = new TripBoard();
 
-const filters = generateFilters();
-const points = generatePoints(POINT_COUNT);
+const appMenu = new SiteMenu();
 
-render(tripMain, new RouteInformationComponent(), RenderPosition.AFTERBEGIN);
-render(tripControls, new SiteMenuComponent(), RenderPosition.BEFOREEND);
-render(tripControls, new FilterComponent(filters), RenderPosition.BEFOREEND);
+render(menuTitle, appMenu.getElement(), RenderPosition.AFTERNODE);
+render(body, tripBoard.getElement(), RenderPosition.BEFOREEND);
 
-const sitePageMainElement = document.querySelector(`.page-main`);
-const tripEvents = sitePageMainElement.querySelector(`.trip-events`);
+const filterController = new FilterController(filterTitle, model);
+filterController.render();
 
-const tripController = new TripController(tripEvents);
+const controller = new TripController(tripBoard, model);
 
-tripController.render(points);
+if (points.length === 0) {
+
+  render(trip, new Total(0).getElement(), RenderPosition.BEFOREEND);
+  render(trips, new NoPoints().getElement(), RenderPosition.AFTERNODE);
+
+} else {
+  const total = getTotalPrice(points);
+
+  render(trip, new RouteInformation(points).getElement(), RenderPosition.BEFOREEND);
+  render(trip, new Total(total).getElement(), RenderPosition.BEFOREEND);
+
+  controller.renderLayout();
+}
+
+appMenu.setOnClick((item) => {
+  switch (item) {
+    case MenuItem.STAT:
+      controller.hide();
+      break;
+    case MenuItem.TABLE:
+      controller.show();
+      break;
+  }
+});
+
+btnNew.addEventListener(`click`, () => {
+  controller.show();
+  controller.createPoint();
+});

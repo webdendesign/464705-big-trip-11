@@ -1,15 +1,5 @@
-export const ChooseMovement = [
-  `taxi`,
-  `bus`,
-  `train`,
-  `ship`,
-  `transport`,
-  `drive`,
-  `flight`,
-];
-
-export const ActivityMovement = [
-  `check-in`,
-  `sightseeing`,
-  `restaurant`,
-];
+export const FilterType = {
+  ALL: `everything`,
+  FUTURE: `future`,
+  PAST: `past`,
+};
