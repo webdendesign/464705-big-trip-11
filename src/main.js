@@ -3,7 +3,7 @@ import {render, RenderPosition} from './utils/render.js';
 import SiteMenu, {MenuItem} from './components/site-menu.js';
 import Total from './components/total.js';
 import RouteInformation from './components/route-information.js';
-import NoPoints from './components/no-points';
+import NoPoints from './components/no-points.js';
 import TripController from './controllers/trip.js';
 import PointModel from './models/points.js';
 import FilterController from './controllers/filter.js';

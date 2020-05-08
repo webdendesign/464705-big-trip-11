@@ -1,9 +1,9 @@
 import PointEdit from '../components/point-edit.js';
 import Point from '../components/point.js';
-import {render, RenderPosition, replaceWith, replace, remove} from '../utils';
-import {Types} from '../mocks/data/types';
-import {getCities} from '../mocks/city';
-import {Activities} from '../mocks/data/activities';
+import {render, RenderPosition, replaceWith, replace, remove} from '../utils/render.js';
+import {Types} from '../mocks/data/types.js';
+import {getCities} from '../mocks/city.js';
+import {Activities} from '../mocks/data/activities.js';
 import moment from 'moment';
 
 export const Mode = {

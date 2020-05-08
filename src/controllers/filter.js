@@ -1,4 +1,4 @@
-import {render as domRender, RenderPosition, replace} from '../utils';
+import {render as domRender, RenderPosition, replace} from '../utils/render.js';
 import Filter from '../components/filter.js';
 import {FilterType} from '../const.js';
 export default class FilterController {

@@ -19,10 +19,12 @@ export default class RouteInformation extends AbstractComponent {
     const startPoint = this._points[0];
     const finalPoint = this._points[this._points.length - 1];
     // TODO : redner dashes depending om point quantity
-    return (`<div class="trip-info__main">
+    return (
+      `<div class="trip-info__main">
         <h1 class="trip-info__title">${startPoint.city.name} &mdash; ... &mdash; ${finalPoint.city.name}</h1>
         <p class="trip-info__dates">${startPoint.startTime.format(`D MMM`)}&nbsp;&mdash;&nbsp; ${finalPoint.finishTime.format(`D MMM`)}</p>
-      </div>`);
+      </div>`
+    );
   }
 }
 

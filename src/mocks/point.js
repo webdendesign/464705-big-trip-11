@@ -1,9 +1,9 @@
 import {getRandomInt, getRandomDate} from '../utils/render.js';
 import moment from 'moment';
-import {Options} from './data/options';
-import {Types} from './data/types';
-import {Activities} from './data/activities';
-import {getCities} from '../mocks/city';
+import {Options} from './data/options.js';
+import {Types} from './data/types.js';
+import {Activities} from './data/activities.js';
+import {getCities} from '../mocks/city.js';
 
 const getRandomType = (types) => {
   return types[Math.floor(Math.random() * types.length)];

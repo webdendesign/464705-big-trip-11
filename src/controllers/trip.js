@@ -1,7 +1,7 @@
 import Sort from '../components/sort.js';
 import Day from '../components/day.js';
 import TripDays from '../components/trip-days.js';
-import {render, RenderPosition, generateDays} from '../utils';
+import {render, RenderPosition, generateDays} from '../utils/render.js';
 import PointController, {Mode as ControllerMode, EmptyPoint} from './point.js';
 
 export default class TripController {
