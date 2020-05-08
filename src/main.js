@@ -1,13 +1,13 @@
-import {generatePoints, getTotalPrice} from './mocks/point';
-import {render, RenderPosition} from './utils';
-import Menu, {MenuItem} from './components/menu';
-import Total from './components/total';
-import TripRoute from './components/tripRoute';
-import NoPoints from './components/noPoints';
-import TripController from './controllers/tripController';
-import PointModel from './models/points';
-import FilterController from './controllers/filterController';
-import TripBoard from './components/tripBoard';
+import {generatePoints, getTotalPrice} from './mocks/point.js';
+import {render, RenderPosition} from './utils/render.js';
+import SiteMenu, {MenuItem} from './components/site-menu.js';
+import Total from './components/total.js';
+import RouteInformation from './components/route-information.js';
+import NoPoints from './components/no-points';
+import TripController from './controllers/trip.js';
+import PointModel from './models/points.js';
+import FilterController from './controllers/filter.js';
+import TripBoard from './components/trip-board.js';
 
 const points = generatePoints(5);
 
@@ -19,7 +19,7 @@ const body = document.querySelector(`.page-body_main`);
 const trips = document.querySelector(`.trip-events`);
 const tripBoard = new TripBoard();
 
-const appMenu = new Menu();
+const appMenu = new SiteMenu();
 
 render(menuTitle, appMenu.getElement(), RenderPosition.AFTERNODE);
 render(body, tripBoard.getElement(), RenderPosition.BEFOREEND);
@@ -37,7 +37,7 @@ if (points.length === 0) {
 } else {
   const total = getTotalPrice(points);
 
-  render(trip, new TripRoute(points).getElement(), RenderPosition.BEFOREEND);
+  render(trip, new RouteInformation(points).getElement(), RenderPosition.BEFOREEND);
   render(trip, new Total(total).getElement(), RenderPosition.BEFOREEND);
 
   controller.renderLayout();

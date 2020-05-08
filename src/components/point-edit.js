@@ -1,14 +1,12 @@
-import {getCities} from '../mocks/city';
-import {Types} from '../mocks/data/types';
-import {Options} from '../mocks/data/options';
-import {Activities} from '../mocks/data/activities';
+import {getCities} from '../mocks/city.js';
+import {Types} from '../mocks/data/types.js';
+import {Options} from '../mocks/data/options.js';
+import {Activities} from '../mocks/data/activities.js';
 import AbstractSmartComponent from './abstract-smart-component';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/themes/light.css';
 import {calculateDuration, calculateDurationMs} from '../utils';
 import moment from 'moment';
-import he from 'he';
-
 
 export default class PointEdit extends AbstractSmartComponent {
 
@@ -161,7 +159,7 @@ export default class PointEdit extends AbstractSmartComponent {
     const formFinishTime = moment(formData.get(`event-end-time`), `DD/MM/YYYY hh:mm`);
     const formDuration = calculateDuration(formStartTime, formFinishTime);
     const formDurationMs = calculateDurationMs(formStartTime, formFinishTime);
-    const formPrice = he.encode(formData.get(`event-price`));
+    // const formPrice = he.encode(formData.get(`event-price`));
     const cities = getCities();
     const formCity = cities.find((city) => city.name === formName);
     const formType = this._type;
@@ -184,7 +182,7 @@ export default class PointEdit extends AbstractSmartComponent {
       finishTime: formFinishTime,
       duration: formDuration,
       durationInMs: formDurationMs,
-      price: formPrice,
+      // price: formPrice,
       favorite: formData.has(`event-favorite`),
     };
   }

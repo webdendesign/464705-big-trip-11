@@ -7,11 +7,13 @@ export const MenuItem = {
 
 export default class SiteMenu extends AbstractComponent {
   getTemplate() {
-    return (`<nav class="trip-controls__trip-tabs  trip-tabs">
-    <a class="trip-tabs__btn  trip-tabs__btn--active" data-name="${MenuItem.TABLE}" href="#">Table</a>
-    <a class="trip-tabs__btn"  data-name="${MenuItem.STAT}" href="#">Stats</a>
-  </nav>
-  `);
+    return (
+      `<nav class="trip-controls__trip-tabs  trip-tabs">
+        <a class="trip-tabs__btn  trip-tabs__btn--active" data-name="${MenuItem.TABLE}" href="#">Table</a>
+        <a class="trip-tabs__btn"  data-name="${MenuItem.STAT}" href="#">Stats</a>
+      </nav>
+      `
+    );
   }
 
   setActiveItem(menuItem) {

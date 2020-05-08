@@ -1,4 +1,4 @@
-import {getRandomInt, getRandomDate} from '../utils';
+import {getRandomInt, getRandomDate} from '../utils/render.js';
 import moment from 'moment';
 import {Options} from './data/options';
 import {Types} from './data/types';

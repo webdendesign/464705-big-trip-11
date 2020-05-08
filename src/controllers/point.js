@@ -1,103 +1,152 @@
-import PointComponent from "../components/point.js";
-import PointEditComponent from "../components/point-edit.js";
-import {render, replace, remove, RenderPosition} from "../utils/render.js";
+import PointEdit from '../components/point-edit.js';
+import Point from '../components/point.js';
+import {render, RenderPosition, replaceWith, replace, remove} from '../utils';
 import {Types} from '../mocks/data/types';
+import {getCities} from '../mocks/city';
 import {Activities} from '../mocks/data/activities';
+import moment from 'moment';
 
-
-const Mode = {
+export const Mode = {
+  ADD: `add`,
   DEFAULT: `default`,
   EDIT: `edit`,
 };
 
+export const EmptyPoint = {
+  name: ``,
+  city: {
+    name: ``,
+    description: ``,
+    images: []
+  },
+  type: Types[0],
+  options: [],
+  startTime: moment(),
+  finishTime: moment(),
+  duration: null,
+  durationInMs: null,
+  price: 0,
+  favorite: false,
+};
+
 export default class PointController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, rerenderEvents) {
     this._container = container;
+    this._eventForm = null;
+    this._eventCard = null;
     this._onDataChange = onDataChange;
-
-    this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
-
-    this._pointComponent = null;
-    this._pointEditComponent = null;
-    this._prevousEvent = null;
+    this._onViewChange = onViewChange;
     this._currentEvent = null;
-
-    this._onEscKeyDown = this._onEscKeyDown.bind(this);
-  }
-
-  _commitChanges() {
-    this._onDataChange(this, this._currentEvent, Object.assign({}, this._currentEvent, this._pointEditComponent.getState()));
-  }
-
-  render(point) {
-    const oldPointComponent = this._pointComponent;
-    const oldPointEditComponent = this._pointEditComponent;
-
-    this._pointComponent = new PointComponent(point);
-    this._pointEditComponent = new PointEditComponent(point);
-
-    this._pointComponent.setEditButtonClickHandler(() => {
-      this._replacePointToEdit();
-      document.addEventListener(`keydown`, this._onEscKeyDown);
-    });
-
-    this._pointEditComponent.setSubmitHandler((evt) => {
-      evt.preventDefault();
-      this._replaceEditToPoint();
-    });
-
-    this._pointEditComponent.selectTypeHandler((evt) => {
-      this._pointEditComponent._type = Types.find((x) => x.name === evt.target.value);
-      this._pointEditComponent._name = Activities.get(this._pointEditComponent._type.name);
-      this._commitChanges();
-    });
-
-    this._pointEditComponent.setFavoriteButtonClickHandler(() => {
-      this._onDataChange(this, point, Object.assign({}, point, {
-        isFavorite: !point.isFavorite,
-      }));
-    });
-
-    if (oldPointEditComponent && oldPointComponent) {
-      replace(this._pointComponent, oldPointComponent);
-      replace(this._pointEditComponent, oldPointEditComponent);
-    } else {
-      render(this._container, this._pointComponent, RenderPosition.BEFOREEND);
-    }
+    this._rerenderEvents = rerenderEvents;
   }
 
   setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._replaceEditToPoint();
+    if (this._mode === Mode.EDIT) {
+      this.replaceWithCard();
+      this._mode = Mode.DEFAULT;
+    }
+    if (this._mode === Mode.ADD) {
+      this.destroy();
     }
   }
 
   destroy() {
-    remove(this._pointEditComponent);
-    remove(this._pointComponent);
+    remove(this._eventForm);
+    remove(this._eventCard);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
-
-  _replaceEditToPoint() {
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-    replace(this._pointComponent, this._pointEditComponent);
-    this._mode = Mode.DEFAULT;
+  _commitChanges() {
+    this._onDataChange(this, this._currentEvent, this._eventForm.getData());
   }
 
-  _replacePointToEdit() {
-    this._onViewChange();
-    replace(this._pointEditComponent, this._pointComponent);
-    this._mode = Mode.EDIT;
+  replaceWithCard() {
+    replaceWith(this._eventForm, this._eventCard);
+  }
+
+  replaceWithForm() {
+    replaceWith(this._eventCard, this._eventForm);
   }
 
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
     if (isEscKey) {
-      this._replaceEditToPoint();
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      this.replaceWithCard();
+    }
+  }
+
+  render(event, mode) {
+
+    this._mode = mode;
+    this._currentEvent = event;
+
+    const oldEventForm = this._eventForm;
+    const oldEventCard = this._eventCard;
+    this._eventCard = new Point(event);
+    this._eventForm = new PointEdit(event);
+
+    this._eventCard.setShowButtonHandler(() => {
+      this._onViewChange();
+      this.replaceWithForm();
+      this._mode = Mode.EDIT;
+      document.addEventListener(`keydown`, this._onEscKeyDown);
+    });
+
+    this._eventForm.setCollapseHandler(() => {
+      this._onViewChange();
+      this.replaceWithCard();
+    });
+
+    this._eventForm.setFavouriteButtonHandler(() => {
+      this._onDataChange(this, event, Object.assign({}, event, {favorite: !event.favorite}));
+    });
+
+    this._eventForm.setDeleteButtonHandler(() => {
+      this._onDataChange(this, event, null);
+    });
+
+    this._eventForm.selectTypeHandler((evt) => {
+      this._eventForm._type = Types.find((x) => x.name === evt.target.value);
+      this._eventForm._name = Activities.get(this._eventForm._type.name);
+    });
+
+    this._eventForm.setOnSelectChange((evt) => {
+      this._eventForm._city = getCities().find((x) => x.name === evt.target.value);
+    });
+
+    this._eventForm.setStartTimeHandler((evt) => {
+      this._eventForm._startTime = moment(evt.target.value, `DD/MM/YYYY hh:mm`);
+    });
+
+    this._eventForm.setFinishTimeHandler((evt) => {
+      this._eventForm._finishTime = moment(evt.target.value, `DD/MM/YYYY hh:mm`);
+    });
+
+    this._eventForm.setSubmitHandler(() => {
+      this._commitChanges();
+      this.replaceWithCard();
+      this._rerenderEvents();
+    });
+
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldEventForm && oldEventCard) {
+          replace(this._eventForm, oldEventForm);
+          replace(this._eventCard, oldEventCard);
+        } else {
+          render(this._container.getEventsContainer(), this._eventCard.getElement(), RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.ADD:
+        if (oldEventForm && oldEventCard) {
+          remove(oldEventCard);
+          remove(oldEventForm);
+        }
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        this._onViewChange();
+        render(this._container.getEventsContainer(), this._eventForm.getElement(), RenderPosition.AFTERBEGIN);
+        break;
     }
   }
 }
