@@ -25,15 +25,18 @@ export default class Day extends AbstractComponent {
         </div>
         <ul class="trip-events__list">
         </ul>
-      </li>`);
+      </li>`
+    );
   }
 
   renderEmptyDay() {
-    return (`<li class="trip-days__item  day">
-              <div class="day__info"></div>
-              <ul class="trip-events__list">
-              </ul>
-            </li>`);
+    return (
+      `<li class="trip-days__item  day">
+        <div class="day__info"></div>
+        <ul class="trip-events__list">
+        </ul>
+      </li>`
+    );
   }
 
   getEventsContainer() {
