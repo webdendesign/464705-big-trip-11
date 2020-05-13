@@ -46,7 +46,7 @@ export default class Point extends AbstractComponent {
           <h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
             ${ options.length > 0 ? ` <li class="event__offer">
-              <span class="event__offer-title">${options[0].name}</span>
+              <span class="event__offer-title">${options[0].title}</span>
               &plus;
               &euro;&nbsp;<span class="event__offer-price">${options[0].price}</span>
             </li>` : ``}

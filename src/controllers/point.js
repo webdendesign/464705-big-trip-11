@@ -17,7 +17,7 @@ export const EmptyPoint = {
   city: {
     name: ``,
     description: ``,
-    images: []
+    pictures: []
   },
   type: Types[0],
   options: [],
@@ -79,6 +79,7 @@ export default class PointController {
   }
 
   render(event, mode) {
+
     this._mode = mode;
     this._currentEvent = event;
     const oldEventForm = this._eventForm;
