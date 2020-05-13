@@ -2,9 +2,9 @@ import PointEdit from '../components/point-edit.js';
 import Point from '../components/point.js';
 import {render, RenderPosition, replaceWith, replace, remove} from '../utils/render.js';
 import {Types} from '../mocks/data/types.js';
-import {getCities} from '../mocks/city.js';
 import {Activities} from '../mocks/data/activities.js';
 import moment from 'moment';
+import PointModels from '../models/point';
 
 export const Mode = {
   ADD: `add`,
@@ -39,6 +39,8 @@ export default class PointController {
     this._onViewChange = onViewChange;
     this._currentEvent = null;
     this._rerenderEvents = rerenderEvents;
+    this._cities = [];
+    this._options = [];
   }
 
   setDefaultView() {
@@ -77,14 +79,12 @@ export default class PointController {
   }
 
   render(event, mode) {
-
     this._mode = mode;
     this._currentEvent = event;
-
     const oldEventForm = this._eventForm;
     const oldEventCard = this._eventCard;
     this._eventCard = new Point(event);
-    this._eventForm = new PointEdit(event);
+    this._eventForm = new PointEdit(event, this._cities, this._options);
 
     this._eventCard.setShowButtonHandler(() => {
       this._onViewChange();
@@ -99,7 +99,9 @@ export default class PointController {
     });
 
     this._eventForm.setFavouriteButtonHandler(() => {
-      this._onDataChange(this, event, Object.assign({}, event, {favorite: !event.favorite}));
+      const newPoint = PointModels.clone(event);
+      newPoint.favorite = !newPoint.favorite;
+      this._onDataChange(this, event, newPoint);
     });
 
     this._eventForm.setDeleteButtonHandler(() => {
@@ -112,7 +114,7 @@ export default class PointController {
     });
 
     this._eventForm.setOnSelectChange((evt) => {
-      this._eventForm._city = getCities().find((x) => x.name === evt.target.value);
+      this._eventForm._city = this._cities.find((x) => x.name === evt.target.value);
     });
 
     this._eventForm.setStartTimeHandler((evt) => {
@@ -148,5 +150,13 @@ export default class PointController {
         render(this._container.getEventsContainer(), this._eventForm.getElement(), RenderPosition.AFTERBEGIN);
         break;
     }
+  }
+
+  setCities(cities) {
+    this._cities = cities;
+  }
+
+  setOptions(options) {
+    this._options = options;
   }
 }

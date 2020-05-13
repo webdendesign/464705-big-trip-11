@@ -2,10 +2,10 @@ import {getCities} from '../mocks/city.js';
 import {Types} from '../mocks/data/types.js';
 import {Options} from '../mocks/data/options.js';
 import {Activities} from '../mocks/data/activities.js';
-import AbstractSmartComponent from './abstract-smart-component';
+import AbstractSmartComponent from './abstract-smart-component.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/themes/light.css';
-import {calculateDuration, calculateDurationMs} from '../utils';
+import {calculateDuration, calculateDurationMs} from '../utils/render.js';
 import moment from 'moment';
 
 export default class PointEdit extends AbstractSmartComponent {

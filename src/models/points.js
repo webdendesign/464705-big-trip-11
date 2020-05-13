@@ -2,8 +2,8 @@ import {FilterType} from '../const';
 import moment from 'moment';
 
 export default class PointModel {
-  constructor(points) {
-    this._points = Array.from(points);
+  constructor() {
+    this._points = [];
     this._activeFilterType = FilterType.ALL;
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
@@ -11,6 +11,10 @@ export default class PointModel {
 
   getPoints() {
     return this._getFilteredPoints();
+  }
+
+  setPoints(points) {
+    this._points = Array.from(points);
   }
 
   _getFilteredPoints() {

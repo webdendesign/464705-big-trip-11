@@ -134,3 +134,12 @@ export const remove = (component) => {
   component.getElement().remove();
   component.removeElement();
 };
+
+export const getTotalPrice = (points) => {
+  let sum = 0;
+  for (const event of points) {
+    sum += event.price;
+    sum += event.options.reduce((accumulator, currentValue) => accumulator + currentValue.price, 0);
+  }
+  return sum;
+};
