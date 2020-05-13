@@ -1,16 +1,18 @@
-import {getCities} from '../mocks/city.js';
-import {Types} from '../mocks/data/types.js';
-import {Options} from '../mocks/data/options.js';
-import {Activities} from '../mocks/data/activities.js';
-import AbstractSmartComponent from './abstract-smart-component';
+/* eslint-disable camelcase */
+import {Types} from '../mocks/data/types';
+import {Activities} from '../mocks/data/activities';
+import AbstractSmartComponent from './abstract-smart-component.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/themes/light.css';
-import {calculateDuration, calculateDurationMs} from '../utils';
+import {calculateDuration, calculateDurationMs} from '../utils/render.js';
 import moment from 'moment';
+import he from 'he';
+import Adapter from '../models/point.js';
+
 
 export default class PointEdit extends AbstractSmartComponent {
 
-  constructor(event) {
+  constructor(event, cities, options) {
     super();
     this._event = event;
     this._name = event.name;
@@ -21,6 +23,9 @@ export default class PointEdit extends AbstractSmartComponent {
     this._flatpickrStart = null;
     this._flatpickrFinish = null;
 
+    this._cities = cities;
+    this._options = options;
+
     this._selectTypeHandler = null;
     this._collapseHandler = null;
     this._selectCityHandler = null;
@@ -28,7 +33,6 @@ export default class PointEdit extends AbstractSmartComponent {
     this._formHandler = null;
     this._applyFlatpickr();
     // this.recoveryListeners();
-
   }
 
   rerender() {
@@ -118,7 +122,6 @@ export default class PointEdit extends AbstractSmartComponent {
       defaultDate: this._startTime.valueOf(),
       maxDate: this._finishTime.valueOf(),
       enableTime: true,
-      // eslint-disable-next-line camelcase
       time_24hr: true,
     });
 
@@ -126,7 +129,6 @@ export default class PointEdit extends AbstractSmartComponent {
       dateFormat: `d/m/Y H:i`,
       defaultDate: this._finishTime.valueOf(),
       enableTime: true,
-      // eslint-disable-next-line camelcase
       time_24hr: true,
       minDate: this._startTime.valueOf(),
     });
@@ -159,32 +161,33 @@ export default class PointEdit extends AbstractSmartComponent {
     const formFinishTime = moment(formData.get(`event-end-time`), `DD/MM/YYYY hh:mm`);
     const formDuration = calculateDuration(formStartTime, formFinishTime);
     const formDurationMs = calculateDurationMs(formStartTime, formFinishTime);
-    // const formPrice = he.encode(formData.get(`event-price`));
-    const cities = getCities();
-    const formCity = cities.find((city) => city.name === formName);
-    const formType = this._type;
+    const formPrice = he.encode(formData.get(`event-price`));
+    const formCity = this._cities.find((city) => city.name === formName);
+    const formType = this._type.name;
     const formOptions = [];
-    Options.map((option) => {
-      if (formData.has(`event-offer-${option.name}`)) {
+    const currentOptions = this._options.find((item) => item.type === formType);
+
+    currentOptions.offers.map((option) => {
+      if (formData.has(`event-offer-${option.title}`)) {
         formOptions.push(option);
       }
     });
 
     const formId = formData.get(`event-id`) === `undefined` ? Math.random().toString(36).substr(2, 9) : formData.get(`event-id`);
 
-    return {
+    return new Adapter({
       id: formId,
       name: Activities.get(formType.name),
-      city: formCity,
+      destination: formCity,
       type: formType,
-      options: formOptions,
-      startTime: formStartTime,
-      finishTime: formFinishTime,
+      offers: formOptions,
+      date_from: formStartTime,
+      date_to: formFinishTime,
       duration: formDuration,
       durationInMs: formDurationMs,
-      // price: formPrice,
-      favorite: formData.has(`event-favorite`),
-    };
+      base_price: formPrice,
+      is_favorite: formData.has(`event-favorite`),
+    });
   }
 
   getData() {
@@ -195,28 +198,32 @@ export default class PointEdit extends AbstractSmartComponent {
 
   renderOption(option, currentEvent) {
 
-    const availableOptions = currentEvent.options.map((item) => item.name);
-    const isChecked = (availableOptions.includes(option.name)) ? `checked` : ``;
+    const availableOptions = currentEvent.options.map((item) => item.title);
+
+    const isChecked = (availableOptions.includes(option.title)) ? `checked` : ``;
 
     return (`
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-l${option.name}-1" type="checkbox" name="event-offer-${option.name}" ${isChecked}>
-          <label class="event__offer-label" for="event-offer-${option.name}-1">
-            <span class="event__offer-title">${option.name}</span>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${option.title}-1" type="checkbox" name="event-offer-${option.title}" ${isChecked}>
+          <label class="event__offer-label" for="event-offer-${option.title}-1">
+            <span class="event__offer-title">${option.title}</span>
             &plus;
-            &euro;&nbsp;<span class="event__offer-price">${option.price}</span>
+              &euro;&nbsp;<span class="event__offer-price">${option.price}</span>
           </label>
         </div>
     `);
+  }
+
+  renderImage(image) {
+    return (`<img class="event__photo" src="${image.src}" alt="${image.description}">`);
   }
 
   renderForm() {
     const {price, favorite, id} = this._event;
     const cityName = this._city === undefined ? `` : this._city.name;
     const cityDescription = this._city === undefined ? `` : this._city.description;
-    const cityImages = this._city === undefined ? [] : this._city.images;
+    const cityImages = this._city === undefined ? [] : this._city.pictures;
 
-    const cities = getCities();
     return (`
         <li class="trip-events__item"><form class="event  event--edit" action="#" method="post">
         <input class="some-hidden" name="type-event" type="hidden" value="${this._type.name}">
@@ -250,7 +257,7 @@ export default class PointEdit extends AbstractSmartComponent {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${cityName}" list="destination-list-1">
             <datalist id="destination-list-1">
-              ${cities.map((item) => `<option value="${item.name}"></option>`)}
+              ${this._cities.map((item) => `<option value="${item.name}"></option>`)}
             </datalist>
           </div>
 
@@ -297,7 +304,7 @@ export default class PointEdit extends AbstractSmartComponent {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              ${Options.filter((option) => option.type === this._type.name).map((option) => this.renderOption(option, this._event)).join(`\n`)}
+              ${this._options.find((option) => option.type === this._type.name).offers.map((option) => this.renderOption(option, this._event)).join(`\n`)}
             </div>
           </section>
 
@@ -307,7 +314,7 @@ export default class PointEdit extends AbstractSmartComponent {
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-              ${cityImages.map((image) => `<img class="event__photo" src="${image}" alt="Event photo">`)}
+              ${cityImages.map((image) => this.renderImage(image)).join(`\n`)}
               </div>
             </div>
           </section>
