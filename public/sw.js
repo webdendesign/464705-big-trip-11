@@ -1,4 +1,4 @@
-const CACHE_PREFIX = `bp-cache`;
+const CACHE_PREFIX = `bt-cache`;
 const CACHE_VER = `v1`;
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VER}`;
 

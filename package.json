@@ -10,7 +10,6 @@
     "test": "npm run eslint"
   },
   "devDependencies": {
-    "chartjs-plugin-datalabels": "0.7.0",
     "css-loader": "3.5.3",
     "eslint": "6.1.0",
     "eslint-config-htmlacademy": "0.5.2",
@@ -25,8 +24,10 @@
   },
   "dependencies": {
     "chart.js": "2.9.3",
+    "chartjs-plugin-datalabels": "0.7.0",
     "flatpickr": "4.6.3",
     "he": "1.2.0",
-    "moment": "2.25.3"
+    "moment": "2.25.3",
+    "nanoid": "3.1.7"
   }
 }

@@ -12,7 +12,6 @@ import {AUTHORIZATION, END_POINT} from './utils';
 import Provider from './api/provider';
 import Store from './api/store';
 
-
 if (`serviceWorker` in navigator) {
   window.addEventListener(`load`, () => {
     navigator.serviceWorker.register(`/sw.js`)
