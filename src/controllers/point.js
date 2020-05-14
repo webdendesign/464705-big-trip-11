@@ -6,6 +6,8 @@ import {Activities} from '../mocks/data/activities.js';
 import moment from 'moment';
 import PointModels from '../models/point';
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export const Mode = {
   ADD: `add`,
   DEFAULT: `default`,
@@ -106,6 +108,9 @@ export default class PointController {
     });
 
     this._eventForm.setDeleteButtonHandler(() => {
+      this._eventForm.setData({
+        deleteButtonText: `Deleting...`,
+      });
       this._onDataChange(this, event, null);
     });
 
@@ -126,10 +131,29 @@ export default class PointController {
       this._eventForm._finishTime = moment(evt.target.value, `DD/MM/YYYY hh:mm`);
     });
 
+    this._eventForm.setPriceHandler((evt) => {
+      this._eventForm.price = evt.target.value;
+    });
+
+    this._eventForm.setOfferHandler((evt) => {
+      const offerTitle = evt.target.dataset.name;
+      const availableTypeOffers = this._options.find((item) => item.type === this._eventForm._type.name).offers;
+      const currentOffer = availableTypeOffers.find((offer) => offer.title === offerTitle);
+      const existOffer = this._eventForm.offers.find(((offer) => offer.title === offerTitle));
+      if (existOffer) {
+        this._eventForm.offers = this._eventForm.offers.filter((item) => item.title !== currentOffer.title);
+      } else {
+        this._eventForm.offers.push(currentOffer);
+      }
+    });
+
     this._eventForm.setSubmitHandler(() => {
+      this._eventForm.setError(0);
+      this._eventForm.lock();
+      this._eventForm.setData({
+        saveButtonText: `Saving...`,
+      });
       this._commitChanges();
-      this.replaceWithCard();
-      this._rerenderEvents();
     });
 
     switch (mode) {
@@ -159,5 +183,20 @@ export default class PointController {
 
   setOptions(options) {
     this._options = options;
+  }
+
+  shake() {
+    this._eventForm.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._eventCard.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._eventForm.setError(true);
+    setTimeout(() => {
+      this._eventForm.getElement().style.animation = ``;
+      this._eventCard.getElement().style.animation = ``;
+      this._eventForm.unlock();
+      this._eventForm.setData({
+        saveButtonText: `Save`,
+        deleteButtonText: `Delete`
+      });
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 }

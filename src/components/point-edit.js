@@ -9,6 +9,10 @@ import moment from 'moment';
 import he from 'he';
 import Adapter from '../models/point.js';
 
+const DefaultData = {
+  deleteButtonText: `Delete`,
+  saveButtonText: `Save`,
+};
 
 export default class PointEdit extends AbstractSmartComponent {
 
@@ -22,16 +26,23 @@ export default class PointEdit extends AbstractSmartComponent {
     this._finishTime = event.finishTime;
     this._flatpickrStart = null;
     this._flatpickrFinish = null;
-
+    this._externalData = DefaultData;
     this._cities = cities;
     this._options = options;
+    this.price = this._event.price;
+    this.offers = event.options;
 
     this._selectTypeHandler = null;
     this._collapseHandler = null;
     this._selectCityHandler = null;
     this._favouriteHandler = null;
     this._formHandler = null;
+    this._priceHandler = null;
+    this._offerHandler = null;
+    this._deleteHandler = null;
     this._applyFlatpickr();
+    this.hasErrors = false;
+    this.isBlocked = false;
     // this.recoveryListeners();
   }
 
@@ -47,6 +58,18 @@ export default class PointEdit extends AbstractSmartComponent {
             <label class="event__type-label  event__type-label--${type.name}" for="event-type-${type.name}-1">${type.name}</label>
         </div>
     `);
+  }
+
+  setError(value) {
+    this.hasErrors = value;
+  }
+
+  lock() {
+    this.isBlocked = true;
+  }
+
+  unlock() {
+    this.isBlocked = false;
   }
 
   setSubmitHandler(handler) {
@@ -65,6 +88,7 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   setDeleteButtonHandler(handler) {
+    this._deleteHandler = handler;
     this.setClickHandler(`.event__reset-btn`, handler);
   }
 
@@ -84,6 +108,15 @@ export default class PointEdit extends AbstractSmartComponent {
     });
   }
 
+  setPriceHandler(handler) {
+    this._priceHandler = handler;
+    const element = this.getElement().querySelector(`.event__input--price`);
+    element.addEventListener(`change`, (evt) => {
+      handler(evt);
+      this.rerender();
+    });
+  }
+
   selectTypeHandler(handler) {
     this._selectTypeHandler = handler;
     const radioButtons = this.getElement().querySelectorAll(`.event__type-input`);
@@ -93,7 +126,19 @@ export default class PointEdit extends AbstractSmartComponent {
         this.rerender();
       });
     });
+  }
 
+  setOfferHandler(handler) {
+    this._offerHandler = handler;
+    const offers = this.getElement().querySelectorAll(`.event__offer-checkbox`);
+    if (offers) {
+      offers.forEach((offer) => {
+        offer.addEventListener(`change`, (evt) => {
+          handler(evt);
+          this.rerender();
+        });
+      });
+    }
   }
 
   setOnSelectChange(handler) {
@@ -152,6 +197,9 @@ export default class PointEdit extends AbstractSmartComponent {
     this.setCollapseHandler(this._collapseHandler);
     this.setOnSelectChange(this._selectCityHandler);
     this.selectTypeHandler(this._selectTypeHandler);
+    this.setPriceHandler(this._priceHandler);
+    this.setOfferHandler(this._offerHandler);
+    this.setDeleteButtonHandler(this._deleteHandler);
   }
 
   parseFormData(formData) {
@@ -196,9 +244,9 @@ export default class PointEdit extends AbstractSmartComponent {
     return this.parseFormData(formData);
   }
 
-  renderOption(option, currentEvent) {
+  renderOption(option) {
 
-    const availableOptions = currentEvent.options.map((item) => item.title);
+    const availableOptions = this.offers.map((item) => item.title);
 
     const isChecked = (availableOptions.includes(option.title)) ? `checked` : ``;
 
@@ -219,10 +267,11 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   renderForm() {
-    const {price, favorite, id} = this._event;
+    const {favorite, id} = this._event;
     const cityName = this._city === undefined ? `` : this._city.name;
     const cityDescription = this._city === undefined ? `` : this._city.description;
     const cityImages = this._city === undefined ? [] : this._city.pictures;
+    const {deleteButtonText, saveButtonText} = this._externalData;
 
     return (`
         <li class="trip-events__item"><form class="event  event--edit" action="#" method="post">
@@ -279,11 +328,11 @@ export default class PointEdit extends AbstractSmartComponent {
               &euro;
             </label>
             <!-- TODO: calculate total sum according to options -->
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${this.price}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${this.isBlocked ? `disabled` : ``}>${saveButtonText}</button>
+          <button class="event__reset-btn" type="reset">${deleteButtonText}</button>
 
           <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${ favorite ? `checked` : ``}>
           <label class="event__favorite-btn" for="event-favorite-1">
@@ -324,6 +373,10 @@ export default class PointEdit extends AbstractSmartComponent {
     `);
   }
 
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+    this.rerender();
+  }
 
   getTemplate() {
     return this.renderForm();
