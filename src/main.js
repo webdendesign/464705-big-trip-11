@@ -1,4 +1,4 @@
-import API from "./api.js";
+import API from "./api/index.js";
 import {render, RenderPosition, getTotalPrice} from './utils/render.js';
 import SiteMenu, {MenuItem} from './components/site-menu.js';
 import Total from './components/total.js';
@@ -9,6 +9,9 @@ import PointModel from './models/points.js';
 import FilterController from './controllers/filter.js';
 import TripBoard from './components/trip-board.js';
 import {AUTHORIZATION, END_POINT} from './utils';
+import Provider from './api/provider';
+import Store from './api/store';
+
 
 if (`serviceWorker` in navigator) {
   window.addEventListener(`load`, () => {
@@ -21,8 +24,15 @@ if (`serviceWorker` in navigator) {
   });
 }
 
+const STORE_PREFIX = `bigtrip-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+
 const api = new API(END_POINT, AUTHORIZATION);
 const model = new PointModel();
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
+
 const btnNew = document.querySelector(`.trip-main__event-add-btn`);
 const [menuTitle, filterTitle] = document.querySelector(`.trip-controls`).children;
 const trip = document.querySelector(`.trip-info`);
@@ -37,7 +47,7 @@ render(body, tripBoard.getElement(), RenderPosition.BEFOREEND);
 const filterController = new FilterController(filterTitle, model);
 filterController.render();
 
-const controller = new TripController(tripBoard, model, api);
+const controller = new TripController(tripBoard, model, apiWithProvider);
 
 appMenu.setOnClick((item) => {
   switch (item) {
@@ -56,9 +66,9 @@ btnNew.addEventListener(`click`, () => {
 });
 
 Promise.all([
-  api.getPoints(),
-  api.getOffers(),
-  api.getDestinations()
+  apiWithProvider.getPoints(),
+  apiWithProvider.getOffers(),
+  apiWithProvider.getDestinations()
 ]).then((res) => {
   const points = res[0];
   controller.setOptions(res[1]);
@@ -74,4 +84,21 @@ Promise.all([
     render(trip, new Total(total).getElement(), RenderPosition.BEFOREEND);
     controller.renderLayout();
   }
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  if (!apiWithProvider.getSynchronize()) {
+    apiWithProvider.sync()
+      .then(() => {
+        // Действие, в случае успешной синхронизации
+      })
+      .catch(() => {
+        // Действие, в случае ошибки синхронизации
+      });
+  }
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
 });
