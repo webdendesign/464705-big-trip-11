@@ -10,6 +10,17 @@ import FilterController from './controllers/filter.js';
 import TripBoard from './components/trip-board.js';
 import {AUTHORIZATION, END_POINT} from './utils';
 
+if (`serviceWorker` in navigator) {
+  window.addEventListener(`load`, () => {
+    navigator.serviceWorker.register(`/sw.js`)
+      .then(() => {
+        // Действие, в случае успешной регистрации ServiceWorker
+      }).catch(() => {
+        // Действие, в случае ошибки при регистрации ServiceWorker
+      });
+  });
+}
+
 const api = new API(END_POINT, AUTHORIZATION);
 const model = new PointModel();
 const btnNew = document.querySelector(`.trip-main__event-add-btn`);
