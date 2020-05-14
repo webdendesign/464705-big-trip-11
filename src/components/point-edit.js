@@ -29,12 +29,17 @@ export default class PointEdit extends AbstractSmartComponent {
     this._externalData = DefaultData;
     this._cities = cities;
     this._options = options;
+    this.price = this._event.price;
+    this.offers = event.options;
 
     this._selectTypeHandler = null;
     this._collapseHandler = null;
     this._selectCityHandler = null;
     this._favouriteHandler = null;
     this._formHandler = null;
+    this._priceHandler = null;
+    this._offerHandler = null;
+    this._deleteHandler = null;
     this._applyFlatpickr();
     this.hasErrors = false;
     this.isBlocked = false;
@@ -83,6 +88,7 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   setDeleteButtonHandler(handler) {
+    this._deleteHandler = handler;
     this.setClickHandler(`.event__reset-btn`, handler);
   }
 
@@ -191,6 +197,9 @@ export default class PointEdit extends AbstractSmartComponent {
     this.setCollapseHandler(this._collapseHandler);
     this.setOnSelectChange(this._selectCityHandler);
     this.selectTypeHandler(this._selectTypeHandler);
+    this.setPriceHandler(this._priceHandler);
+    this.setOfferHandler(this._offerHandler);
+    this.setDeleteButtonHandler(this._deleteHandler);
   }
 
   parseFormData(formData) {
@@ -235,9 +244,9 @@ export default class PointEdit extends AbstractSmartComponent {
     return this.parseFormData(formData);
   }
 
-  renderOption(option, currentEvent) {
+  renderOption(option) {
 
-    const availableOptions = currentEvent.options.map((item) => item.title);
+    const availableOptions = this.offers.map((item) => item.title);
 
     const isChecked = (availableOptions.includes(option.title)) ? `checked` : ``;
 
@@ -258,7 +267,7 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   renderForm() {
-    const {price, favorite, id} = this._event;
+    const {favorite, id} = this._event;
     const cityName = this._city === undefined ? `` : this._city.name;
     const cityDescription = this._city === undefined ? `` : this._city.description;
     const cityImages = this._city === undefined ? [] : this._city.pictures;
@@ -319,7 +328,7 @@ export default class PointEdit extends AbstractSmartComponent {
               &euro;
             </label>
             <!-- TODO: calculate total sum according to options -->
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${this.price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit" ${this.isBlocked ? `disabled` : ``}>${saveButtonText}</button>
