@@ -9,8 +9,9 @@ import PointModel from './models/points.js';
 import FilterController from './controllers/filter.js';
 import TripBoard from './components/trip-board.js';
 import {AUTHORIZATION, END_POINT} from './utils';
-import Provider from './api/provider';
-import Store from './api/store';
+import Provider from './api/provider.js';
+import Store from './api/store.js';
+import Statistics from './components/statistics.js';
 
 if (`serviceWorker` in navigator) {
   window.addEventListener(`load`, () => {
@@ -38,10 +39,13 @@ const trip = document.querySelector(`.trip-info`);
 const body = document.querySelector(`.page-body_main`);
 const trips = document.querySelector(`.trip-events`);
 const tripBoard = new TripBoard();
+const statistics = new Statistics(model);
 const appMenu = new SiteMenu();
 
 render(menuTitle, appMenu.getElement(), RenderPosition.AFTERNODE);
 render(body, tripBoard.getElement(), RenderPosition.BEFOREEND);
+render(body, statistics.getElement(), RenderPosition.BEFOREEND);
+statistics.hide();
 
 const filterController = new FilterController(filterTitle, model);
 filterController.render();
@@ -52,8 +56,10 @@ appMenu.setOnClick((item) => {
   switch (item) {
     case MenuItem.STAT:
       controller.hide();
+      statistics.show();
       break;
     case MenuItem.TABLE:
+      statistics.hide();
       controller.show();
       break;
   }
