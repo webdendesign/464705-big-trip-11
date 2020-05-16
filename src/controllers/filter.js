@@ -30,6 +30,7 @@ export default class FilterController {
   _onFilterChange(filterType) {
     this._model.setFilter(filterType);
     this._activeFilterType = filterType;
+    this._onDataChange();
   }
 
   _onDataChange() {

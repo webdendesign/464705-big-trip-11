@@ -1,12 +1,9 @@
-import PointEdit from '../components/point-edit.js';
-import Point from '../components/point.js';
-import {render, RenderPosition, replaceWith, replace, remove} from '../utils/render.js';
-import {Types} from '../mocks/data/types.js';
-import {Activities} from '../mocks/data/activities.js';
 import moment from 'moment';
-import PointModels from '../models/point';
-
-const SHAKE_ANIMATION_TIMEOUT = 600;
+import Form from '../components/point-edit.js';
+import Event from '../components/point.js';
+import {render, RenderPosition, replaceWith, replace, remove, generatePlaceholder} from '../utils/render.js';
+import {Types} from '../mocks/data/types.js';
+import Point from '../models/point.js';
 
 export const Mode = {
   ADD: `add`,
@@ -14,8 +11,8 @@ export const Mode = {
   EDIT: `edit`,
 };
 
-export const EmptyPoint = {
-  name: ``,
+export const emptyPoint = {
+  name: generatePlaceholder(Types[0].name),
   city: {
     name: ``,
     description: ``,
@@ -23,8 +20,8 @@ export const EmptyPoint = {
   },
   type: Types[0],
   options: [],
-  startTime: moment(),
-  finishTime: moment(),
+  startTime: new Date(),
+  finishTime: new Date(),
   duration: null,
   durationInMs: null,
   price: 0,
@@ -43,11 +40,26 @@ export default class PointController {
     this._rerenderEvents = rerenderEvents;
     this._cities = [];
     this._options = [];
+
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+  }
+
+  setCities(cities) {
+    this._cities = cities;
+  }
+
+  setOptions(options) {
+    this._options = options;
+  }
+
+  getMode() {
+    return this._mode;
   }
 
   setDefaultView() {
     if (this._mode === Mode.EDIT) {
       this.replaceWithCard();
+      this._eventForm.clearHandlers();
       this._mode = Mode.DEFAULT;
     }
     if (this._mode === Mode.ADD) {
@@ -55,42 +67,18 @@ export default class PointController {
     }
   }
 
-  destroy() {
-    remove(this._eventForm);
-    remove(this._eventCard);
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-  }
-
-  _commitChanges() {
-    this._onDataChange(this, this._currentEvent, this._eventForm.getData());
-  }
-
-  replaceWithCard() {
-    replaceWith(this._eventForm, this._eventCard);
-  }
-
-  replaceWithForm() {
-    replaceWith(this._eventCard, this._eventForm);
-  }
-
-  _onEscKeyDown(evt) {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-    if (isEscKey) {
-      this.replaceWithCard();
-    }
-  }
-
   render(event, mode) {
-
     this._mode = mode;
     this._currentEvent = event;
     const oldEventForm = this._eventForm;
     const oldEventCard = this._eventCard;
-    this._eventCard = new Point(event);
-    this._eventForm = new PointEdit(event, this._cities, this._options);
+    this._eventCard = new Event(event, this._options);
+    this._eventForm = new Form(event, this._cities, this._options);
 
     this._eventCard.setShowButtonHandler(() => {
       this._onViewChange();
+      this._eventForm.setFormToInitialState();
+      this._eventForm.rerender();
       this.replaceWithForm();
       this._mode = Mode.EDIT;
       document.addEventListener(`keydown`, this._onEscKeyDown);
@@ -99,12 +87,18 @@ export default class PointController {
     this._eventForm.setCollapseHandler(() => {
       this._onViewChange();
       this.replaceWithCard();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      this._eventForm.clearHandlers();
     });
 
     this._eventForm.setFavouriteButtonHandler(() => {
-      const newPoint = PointModels.clone(event);
-      newPoint.favorite = !newPoint.favorite;
-      this._onDataChange(this, event, newPoint);
+      if (this._mode === Mode.ADD) {
+        return;
+      }
+      const newPoint = Point.clone(event);
+      newPoint.favorite = !this._eventForm.favorite;
+      this._eventForm.favorite = newPoint.favorite;
+      this._onDataChange(this, event, newPoint, false);
     });
 
     this._eventForm.setDeleteButtonHandler(() => {
@@ -116,7 +110,8 @@ export default class PointController {
 
     this._eventForm.selectTypeHandler((evt) => {
       this._eventForm._type = Types.find((x) => x.name === evt.target.value);
-      this._eventForm._name = Activities.get(this._eventForm._type.name);
+      this._eventForm._name = generatePlaceholder(this._eventForm._type.name);
+      this._eventForm.offers = [];
     });
 
     this._eventForm.setOnSelectChange((evt) => {
@@ -124,11 +119,11 @@ export default class PointController {
     });
 
     this._eventForm.setStartTimeHandler((evt) => {
-      this._eventForm._startTime = moment(evt.target.value, `DD/MM/YYYY hh:mm`);
+      this._eventForm._startTime = new Date(moment(evt.target.value, `DD/MM/YY hh:mm`).format());
     });
 
     this._eventForm.setFinishTimeHandler((evt) => {
-      this._eventForm._finishTime = moment(evt.target.value, `DD/MM/YYYY hh:mm`);
+      this._eventForm._finishTime = new Date(moment(evt.target.value, `DD/MM/YY hh:mm`).format());
     });
 
     this._eventForm.setPriceHandler((evt) => {
@@ -138,13 +133,15 @@ export default class PointController {
     this._eventForm.setOfferHandler((evt) => {
       const offerTitle = evt.target.dataset.name;
       const availableTypeOffers = this._options.find((item) => item.type === this._eventForm._type.name).offers;
-      const currentOffer = availableTypeOffers.find((offer) => offer.title === offerTitle);
       const existOffer = this._eventForm.offers.find(((offer) => offer.title === offerTitle));
+
       if (existOffer) {
-        this._eventForm.offers = this._eventForm.offers.filter((item) => item.title !== currentOffer.title);
-      } else {
-        this._eventForm.offers.push(currentOffer);
+        this._eventForm.offers = this._eventForm.offers.filter((item) => item.title !== offerTitle);
+        return;
       }
+
+      const currentOffer = availableTypeOffers.find((offer) => offer.title === offerTitle);
+      this._eventForm.offers.push(currentOffer);
     });
 
     this._eventForm.setSubmitHandler(() => {
@@ -171,32 +168,44 @@ export default class PointController {
           remove(oldEventForm);
         }
         document.addEventListener(`keydown`, this._onEscKeyDown);
+        this._eventForm.addDateListeners();
         this._onViewChange();
         render(this._container.getEventsContainer(), this._eventForm.getElement(), RenderPosition.AFTERBEGIN);
         break;
     }
   }
 
-  setCities(cities) {
-    this._cities = cities;
+  destroy() {
+    remove(this._eventForm);
+    remove(this._eventCard);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  setOptions(options) {
-    this._options = options;
+  _commitChanges() {
+    this._onDataChange(this, this._currentEvent, this._eventForm.getData());
+  }
+
+  replaceWithCard() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    replaceWith(this._eventForm, this._eventCard);
+  }
+
+  replaceWithForm() {
+    replaceWith(this._eventCard, this._eventForm);
+  }
+
+  _onEscKeyDown(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+    if (isEscKey) {
+      if (this._mode === Mode.ADD) {
+        this.destroy();
+        return;
+      }
+      this.replaceWithCard();
+    }
   }
 
   shake() {
-    this._eventForm.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    this._eventCard.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    this._eventForm.setError(true);
-    setTimeout(() => {
-      this._eventForm.getElement().style.animation = ``;
-      this._eventCard.getElement().style.animation = ``;
-      this._eventForm.unlock();
-      this._eventForm.setData({
-        saveButtonText: `Save`,
-        deleteButtonText: `Delete`
-      });
-    }, SHAKE_ANIMATION_TIMEOUT);
+    this._eventForm.shake();
   }
 }

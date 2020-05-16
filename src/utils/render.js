@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+import {prepositions, types} from '../const.js';
+
 export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomInt(0, array.length);
   return array[randomIndex];
@@ -57,7 +59,7 @@ export const replaceWith = (component, newComponent) => {
   component.getElement().replaceWith(newComponent.getElement());
 };
 
-export const generateDays = (points) => {
+export const generateDays = (points, firstDay) => {
   points.sort((a, b) => {
     if (a.startTime > b.startTime) {
       return 1;
@@ -71,19 +73,22 @@ export const generateDays = (points) => {
   const repeatingDays = [];
 
   const allPointTimes = points.filter((item) => {
-    if (!repeatingDays.includes(item.startTime.format(`L`))) {
-      repeatingDays.push(item.startTime.format(`L`));
+    if (!repeatingDays.includes(moment(item.startTime).format(`L`))) {
+      repeatingDays.push(moment(item.startTime).format(`L`));
       return true;
     }
     return false;
   }).map((item) => item.startTime);
 
   const days = [];
+  const oneDay = 1;
 
   for (const dateTime of allPointTimes) {
+    const difference = Math.round(moment(dateTime).startOf(`day`).diff(moment(firstDay).startOf(`day`), `days`, true));
     days.push({
+      counter: (dateTime === firstDay) ? oneDay : difference + oneDay,
       date: dateTime,
-      points: points.filter((item) => item.startTime.isSame(dateTime, `day`))
+      points: points.filter((item) => moment(item.startTime).isSame(dateTime, `day`))
     });
   }
   return days;
@@ -104,7 +109,7 @@ export const replace = (newComponent, oldComponent) => {
 
 export const calculateDuration = (startTime, finishTime) => {
 
-  const diff = finishTime.diff(startTime);
+  const diff = moment(finishTime).diff(moment(startTime));
   const diffDuration = moment.duration(diff);
 
   let duration = ``;
@@ -125,7 +130,7 @@ export const calculateDuration = (startTime, finishTime) => {
 };
 
 export const calculateDurationMs = (startTime, finishTime) => {
-  const diff = finishTime.diff(startTime);
+  const diff = moment(finishTime).diff(moment(startTime));
   const diffDuration = moment.duration(diff);
   return diffDuration.asMilliseconds();
 };
@@ -164,3 +169,13 @@ export const calculateDurationFromMs = (mseconds) => {
 
   return duration;
 };
+
+export const setFirstLetterToUpperCase = (string) => {
+  return `${string.slice(0, 1).toUpperCase()}${string.slice(1)}`;
+};
+
+export const generatePlaceholder = (type) => {
+  return `${setFirstLetterToUpperCase(type)} ${prepositions.get(types.get(type))}`;
+};
+
+
