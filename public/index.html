@@ -9,6 +9,39 @@
 
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      10%,
+      30%,
+      50%,
+      70%,
+      90% {
+        transform: translateX(-5px);
+      }
+
+      20%,
+      40%,
+      60%,
+      80% {
+        transform: translateX(5px);
+      }
+    }
+
+    .shake {
+      animation: shake 0.6s;
+    }
+
+    .error {
+      border: 2px solid #ff2b2b;
+      border-radius: 18px;
+    }
+  </style>
 </head>
 
 <body class="page-body">
@@ -36,13 +69,7 @@
   </header>
   <main class="page-body__page-main  page-main">
     <div class="page-body__container page-body_main">
-      <section class="trip-events">
-        <h2 class="visually-hidden">Trip events</h2>
 
-        <!-- Сортировка -->
-
-        <!-- Контент -->
-      </section>
     </div>
   </main>
 

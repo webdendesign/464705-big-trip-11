@@ -1,8 +1,8 @@
 import API from "./api/index.js";
-import {render, RenderPosition, getTotalPrice} from './utils/render.js';
+import {render, RenderPosition} from './utils/render.js';
 import SiteMenu, {MenuItem} from './components/site-menu.js';
-import Total from './components/total.js';
-import RouteInformation from './components/route-information.js';
+import TripDetailsController from './controllers/route.js';
+import TotalController from './controllers/total.js';
 import NoPoints from './components/no-points.js';
 import TripController from './controllers/trip.js';
 import PointModel from './models/points.js';
@@ -48,9 +48,9 @@ render(body, statistics.getElement(), RenderPosition.BEFOREEND);
 statistics.hide();
 
 const filterController = new FilterController(filterTitle, model);
-filterController.render();
-
 const controller = new TripController(tripBoard, model, apiWithProvider);
+const detailsController = new TripDetailsController(trip, model);
+const totalController = new TotalController(trip, model);
 
 appMenu.setOnClick((item) => {
   switch (item) {
@@ -75,18 +75,17 @@ Promise.all([
   apiWithProvider.getOffers(),
   apiWithProvider.getDestinations()
 ]).then((res) => {
-  const points = res[0];
-  controller.setOptions(res[1]);
-  controller.setCities(res[2]);
+  const [points, options, cities] = res;
+  controller.setOptions(options);
+  controller.setCities(cities);
   model.setPoints(points);
-
+  filterController.render();
   if (points[0].length === 0) {
-    render(trip, new Total(0).getElement(), RenderPosition.BEFOREEND);
+    totalController.render();
     render(trips, new NoPoints().getElement(), RenderPosition.AFTERNODE);
   } else {
-    const total = getTotalPrice(points);
-    render(trip, new RouteInformation(points).getElement(), RenderPosition.BEFOREEND);
-    render(trip, new Total(total).getElement(), RenderPosition.BEFOREEND);
+    detailsController.render();
+    totalController.render();
     controller.renderLayout();
   }
 });

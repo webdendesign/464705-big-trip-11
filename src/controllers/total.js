@@ -1,5 +1,5 @@
-import {render as domRender, RenderPosition, replace, getTotalPrice} from '../utils';
-import Total from '../components/total';
+import {render as domRender, RenderPosition, replace, getTotalPrice} from '../utils/render.js';
+import Total from '../components/total.js';
 
 export default class TotalController {
 

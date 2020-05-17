@@ -75,7 +75,4 @@ export default class Event extends AbstractComponent {
     </div>
   </li>`);
   }
-
-
 }
-

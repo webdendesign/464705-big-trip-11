@@ -39,10 +39,12 @@ export default class RouteInformation extends AbstractComponent {
     } else {
       title = `${startPoint.city.name} &mdash; ${startPoint.city.name}`;
     }
-    return (`<div class="trip-info__main">
+    return (
+      `<div class="trip-info__main">
         <h1 class="trip-info__title">${title}</h1>
         <p class="trip-info__dates">${startTime.format(`D MMM`)}&nbsp;&mdash;&nbsp; ${finishTime.format(`D MMM`)}</p>
-      </div>`);
+      </div>`
+    );
   }
 }
 

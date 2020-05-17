@@ -177,5 +177,3 @@ export const setFirstLetterToUpperCase = (string) => {
 export const generatePlaceholder = (type) => {
   return `${setFirstLetterToUpperCase(type)} ${prepositions.get(types.get(type))}`;
 };
-
-

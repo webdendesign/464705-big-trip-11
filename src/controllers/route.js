@@ -1,5 +1,5 @@
-import {render as domRender, RenderPosition, replace} from '../utils';
-import TripRoute from '../components/tripRoute';
+import {render as domRender, RenderPosition, replace} from '../utils/render.js';
+import RouteInformation from '../components/route-information.js';
 
 export default class TripDetailsController {
 
@@ -14,7 +14,7 @@ export default class TripDetailsController {
   render() {
     const oldComponent = this._detailsComponent;
 
-    this._detailsComponent = new TripRoute(this._model.getPointsAll());
+    this._detailsComponent = new RouteInformation(this._model.getPointsAll());
 
     if (oldComponent) {
       replace(this._detailsComponent, oldComponent);
