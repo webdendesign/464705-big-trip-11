@@ -1,4 +1,4 @@
-import Sorting from '../components/sort.js';
+import Sort from '../components/sort.js';
 import Day from '../components/day.js';
 import TripDays from '../components/trip-days.js';
 import {render, RenderPosition, generateDays, remove} from '../utils/render.js';
@@ -12,7 +12,7 @@ export default class TripController {
     this._model = model;
     this._api = api;
 
-    this._sort = new Sorting();
+    this._sort = new Sort();
     this._tripDays = new TripDays();
     this._createForm = null;
     this._createFormDayElement = null;

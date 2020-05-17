@@ -8,7 +8,7 @@ import TripController from './controllers/trip.js';
 import PointModel from './models/points.js';
 import FilterController from './controllers/filter.js';
 import TripBoard from './components/trip-board.js';
-import {AUTHORIZATION, END_POINT} from './utils';
+import {AUTHORIZATION, END_POINT} from './utils.js';
 import Provider from './api/provider.js';
 import Store from './api/store.js';
 import Statistics from './components/statistics.js';
