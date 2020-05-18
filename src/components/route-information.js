@@ -1,11 +1,11 @@
-import AbstractComponent from './abstract-component.js';
 import moment from 'moment';
+
+import AbstractComponent from './abstract-component.js';
 
 const MAX_CITIES_COUNT = 3;
 const MIDDLE_CITIES_COUNT = 2;
 
 export default class RouteInformation extends AbstractComponent {
-
   constructor(points) {
     super();
     this._points = points.sort((a, b) => {
@@ -47,4 +47,3 @@ export default class RouteInformation extends AbstractComponent {
     );
   }
 }
-

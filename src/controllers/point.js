@@ -1,9 +1,9 @@
 import moment from 'moment';
-import Form from '../components/point-edit.js';
-import Event from '../components/point.js';
+import PointEdit from '../components/point-edit.js';
+import Point from '../components/point.js';
 import {render, RenderPosition, replaceWith, replace, remove, generatePlaceholder} from '../utils/render.js';
 import {Types} from '../mocks/data/types.js';
-import Point from '../models/point.js';
+import PointModel from '../models/point.js';
 
 export const Mode = {
   ADD: `add`,
@@ -72,8 +72,8 @@ export default class PointController {
     this._currentEvent = event;
     const oldEventForm = this._eventForm;
     const oldEventCard = this._eventCard;
-    this._eventCard = new Event(event, this._options);
-    this._eventForm = new Form(event, this._cities, this._options);
+    this._eventCard = new Point(event, this._options);
+    this._eventForm = new PointEdit(event, this._cities, this._options);
 
     this._eventCard.setShowButtonHandler(() => {
       this._onViewChange();
@@ -95,7 +95,7 @@ export default class PointController {
       if (this._mode === Mode.ADD) {
         return;
       }
-      const newPoint = Point.clone(event);
+      const newPoint = PointModel.clone(event);
       newPoint.favorite = !this._eventForm.favorite;
       this._eventForm.favorite = newPoint.favorite;
       this._onDataChange(this, event, newPoint, false);

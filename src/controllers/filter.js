@@ -17,7 +17,7 @@ export default class FilterController {
     });
     const oldComponent = this._filterComponent;
 
-    this._filterComponent = new Filter(filters);
+    this._filterComponent = new Filter(filters, this._model);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
 
     if (oldComponent) {

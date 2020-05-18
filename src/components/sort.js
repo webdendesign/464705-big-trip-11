@@ -1,7 +1,6 @@
 import AbstractComponent from "./abstract-component.js";
 
 export default class Sort extends AbstractComponent {
-
   constructor() {
     super();
     this._sortType = this.sortTypes().DEFAULT;

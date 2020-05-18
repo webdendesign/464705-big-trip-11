@@ -1,11 +1,12 @@
+import moment from 'moment';
+
 import AbstractComponent from "./abstract-component.js";
 import {VISIBLE_OPTIONS_COUNT} from '../utils.js';
-import moment from 'moment';
-export default class Event extends AbstractComponent {
+export default class Point extends AbstractComponent {
 
-  constructor(event, options) {
+  constructor(point, options) {
     super();
-    this._event = event;
+    this._point = point;
     this._showBtnHandler = null;
     this._shownOptions = null;
     this._allOptions = options;
@@ -29,18 +30,17 @@ export default class Event extends AbstractComponent {
 
     this._shownOptions++;
 
-
-    return (`
-         <li class="event__offer">
-          <span class="event__offer-title">${option.title}</span>
-          &plus;
-          &euro;&nbsp;<span class="event__offer-price">${option.price}</span>
-         </li>
-    `);
+    return (
+      `<li class="event__offer">
+        <span class="event__offer-title">${option.title}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${option.price}</span>
+      </li>`
+    );
   }
 
   getTemplate() {
-    const {name, city, startTime, finishTime, duration, price, options, type} = this._event;
+    const {name, city, startTime, finishTime, duration, price, options, type} = this._point;
     const cityName = city === undefined ? `` : city.name;
     this._shownOptions = 1;
 

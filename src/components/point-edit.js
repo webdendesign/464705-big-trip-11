@@ -3,35 +3,33 @@ import moment from 'moment';
 import he from 'he';
 import debounce from 'lodash/debounce';
 import flatpickr from 'flatpickr';
-import 'flatpickr/dist/themes/light.css';
-
+import 'flatpickr/dist/flatpickr.min.css';
 import {Types} from '../mocks/data/types';
 import AbstractSmartComponent from './abstract-smart-component';
 import {calculateDuration, calculateDurationMs, generatePlaceholder} from '../utils/render.js';
 import Adapter from '../models/point.js';
 
+const TIMEOUT = 1000;
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const ButtonText = {
   deleteButtonText: `Delete`,
   saveButtonText: `Save`,
 };
 
-const TIMEOUT = 1000;
-const SHAKE_ANIMATION_TIMEOUT = 600;
-
 export default class PointEdit extends AbstractSmartComponent {
-
-  constructor(event, cities, allOptions) {
+  constructor(point, cities, allOptions) {
     super();
-    this._event = event;
-    this._name = event.name;
-    this._city = event.city;
-    this._type = event.type;
-    this.offers = event.options;
-    this.price = this._event.price;
-    this.favorite = event.favorite;
-    this._startTime = event.startTime;
-    this._finishTime = event.finishTime;
+
+    this._point = point;
+    this._name = point.name;
+    this._city = point.city;
+    this._type = point.type;
+    this.offers = point.options;
+    this.price = this._point.price;
+    this.favorite = point.favorite;
+    this._startTime = point.startTime;
+    this._finishTime = point.finishTime;
     this._flatpickrStart = null;
     this._flatpickrFinish = null;
     this._externalData = ButtonText;
@@ -53,25 +51,25 @@ export default class PointEdit extends AbstractSmartComponent {
     this.isBlocked = false;
   }
 
-  setData(data) {
-    this._externalData = Object.assign({}, ButtonText, data);
-    this.rerender();
-  }
-
   getData() {
     const form = this.getElement().querySelector(`.event--edit`);
     const formData = new FormData(form);
     return this.parseFormData(formData);
   }
 
+  setData(data) {
+    this._externalData = Object.assign({}, ButtonText, data);
+    this.rerender();
+  }
+
   setFormToInitialState() {
-    this._name = this._event.name;
-    this._city = this._event.city;
-    this._type = this._event.type;
-    this._startTime = this._event.startTime;
-    this._finishTime = this._event.finishTime;
-    this.price = this._event.price;
-    this.offers = this._event.options;
+    this._name = this._point.name;
+    this._city = this._point.city;
+    this._type = this._point.type;
+    this._startTime = this._point.startTime;
+    this._finishTime = this._point.finishTime;
+    this.price = this._point.price;
+    this.offers = this._point.options;
   }
 
   setError(value) {
@@ -179,12 +177,12 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   renderTypeItem(type) {
-    return (`
-        <div class="event__type-item">
-            <input id="event-type-${type.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.name}" ${(this._type.name === type.name) ? `checked` : ``}>
-            <label class="event__type-label  event__type-label--${type.name}" for="event-type-${type.name}-1">${type.name}</label>
-        </div>
-    `);
+    return (
+      `<div class="event__type-item">
+        <input id="event-type-${type.name}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.name}" ${(this._type.name === type.name) ? `checked` : ``}>
+        <label class="event__type-label  event__type-label--${type.name}" for="event-type-${type.name}-1">${type.name}</label>
+      </div>`
+    );
   }
 
   addDateListeners() {
@@ -239,7 +237,6 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   parseFormData(formData) {
-
     const formName = formData.get(`event-destination`);
     const formStartTime = moment(formData.get(`event-start-time`), `DD/MM/YYYY hh:mm`);
     const formFinishTime = moment(formData.get(`event-end-time`), `DD/MM/YYYY hh:mm`);
@@ -266,7 +263,6 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   renderOption(option) {
-
     const availableOptions = this.offers.map((item) => item.title);
     const isChecked = (availableOptions.includes(option.title)) ? `checked` : ``;
     const currentEventOption = this.offers.find((item) => item.title === option.title);
@@ -317,7 +313,7 @@ export default class PointEdit extends AbstractSmartComponent {
   }
 
   renderForm() {
-    const {id} = this._event;
+    const {id} = this._point;
     const cityName = this._city === undefined ? `` : this._city.name;
     const {deleteButtonText, saveButtonText} = this._externalData;
 
@@ -401,7 +397,6 @@ export default class PointEdit extends AbstractSmartComponent {
       </li>
     `);
   }
-
 
   shake() {
     this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;

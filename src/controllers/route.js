@@ -1,8 +1,7 @@
 import {render as domRender, RenderPosition, replace} from '../utils/render.js';
 import RouteInformation from '../components/route-information.js';
 
-export default class TripDetailsController {
-
+export default class RouteController {
   constructor(container, model) {
     this._container = container;
     this._model = model;

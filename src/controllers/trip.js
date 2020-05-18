@@ -1,22 +1,19 @@
-import Sort from '../components/sort.js';
-import Day from '../components/day.js';
-import TripDays from '../components/trip-days.js';
+import SortComponent from '../components/sort.js';
+import DayComponent from '../components/day.js';
+import TripDaysComponent from '../components/trip-days.js';
 import {render, RenderPosition, generateDays, remove} from '../utils/render.js';
 import PointController, {Mode as ControllerMode, emptyPoint} from './point.js';
 
-
 export default class TripController {
-
   constructor(container, model, api) {
     this._container = container;
     this._model = model;
     this._api = api;
 
-    this._sort = new Sort();
-    this._tripDays = new TripDays();
+    this._sort = new SortComponent();
+    this._tripDays = new TripDaysComponent();
     this._createForm = null;
     this._createFormDayElement = null;
-
     this._points = [];
     this._renderedControllers = [];
 
@@ -25,11 +22,9 @@ export default class TripController {
     this._sortHandler = this._sortHandler.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this.rerenderEvents = this.rerenderEvents.bind(this);
-
     this._model.setFilterChangeHandler(this._onFilterChange);
     this._sort.setOnClickHandler(this._sortHandler);
     this._currentSortType = this._sort.sortTypes().DEFAULT;
-
     this._cities = [];
     this._options = [];
   }
@@ -50,7 +45,7 @@ export default class TripController {
   }
 
   renderEventsWithoutDays(points) {
-    const day = new Day();
+    const day = new DayComponent();
     render(this._tripDays.getElement(), day.getElement(), RenderPosition.BEFOREEND);
     this._renderedControllers = points.map((point) => {
       const event = new PointController(day, this._onDataChange, this._onViewChange, this.rerenderEvents);
@@ -67,7 +62,7 @@ export default class TripController {
     const days = this._tripDays.getElement();
 
     daysEvents.map((item) => {
-      const day = new Day(item);
+      const day = new DayComponent(item);
       daysElements.push(day);
       render(days, day.getElement(), RenderPosition.BEFOREEND);
     });
@@ -94,7 +89,7 @@ export default class TripController {
 
   createPoint() {
     this.destroyCreatingForm();
-    this._createFormDayElement = new Day();
+    this._createFormDayElement = new DayComponent();
     render(this._tripDays.getElement(), this._createFormDayElement.getElement(), RenderPosition.AFTERBEGIN);
     this._createForm = new PointController(this._createFormDayElement, this._onDataChange, this._onViewChange, this.rerenderEvents);
     this._createForm.setCities(this._cities);

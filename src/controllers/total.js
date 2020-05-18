@@ -2,7 +2,6 @@ import {render as domRender, RenderPosition, replace, getTotalPrice} from '../ut
 import Total from '../components/total.js';
 
 export default class TotalController {
-
   constructor(container, model) {
     this._container = container;
     this._model = model;

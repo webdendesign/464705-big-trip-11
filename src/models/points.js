@@ -1,5 +1,4 @@
 import moment from 'moment';
-
 import {FilterType} from '../const';
 
 export default class PointModel {

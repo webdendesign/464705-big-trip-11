@@ -1,5 +1,5 @@
-import AbstractComponent from "./abstract-component.js";
 import moment from 'moment';
+import AbstractComponent from "./abstract-component.js";
 
 export default class Day extends AbstractComponent {
 

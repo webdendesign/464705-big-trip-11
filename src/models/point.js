@@ -1,7 +1,7 @@
 import {calculateDuration, calculateDurationMs, generatePlaceholder} from '../utils/render.js';
-import {types} from '../const';
+import {types} from '../const.js';
 
-export default class Point {
+export default class PointModel {
   constructor(data) {
     this.id = data[`id`];
     this.name = generatePlaceholder(data[`type`]);
@@ -35,14 +35,14 @@ export default class Point {
   }
 
   static parsePoint(data) {
-    return new Point(data);
+    return new PointModel(data);
   }
 
   static parsePoints(data) {
-    return data.map(Point.parsePoint);
+    return data.map(PointModel.parsePoint);
   }
 
   static clone(data) {
-    return new Point(data.toRAW());
+    return new PointModel(data.toRAW());
   }
 }
