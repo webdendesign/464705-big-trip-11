@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import moment from 'moment';
 import he from 'he';
 import debounce from 'lodash/debounce';
