@@ -46,7 +46,7 @@ const legendConf = {
   display: false
 };
 
-const datasetConf = (values, lab) => {
+const getConf = (values, lab) => {
   return [
     {
       label: lab,
@@ -97,7 +97,7 @@ const renderMoneyChart = (element, points) => {
     fontSize: 16,
     data: {
       labels,
-      datasets: datasetConf(values, `Money spent`)
+      datasets: getConf(values, `Money spent`)
     },
     options: {
       layout: padding,
@@ -150,7 +150,7 @@ const renderTransportChart = (element, points) => {
     fontSize: 16,
     data: {
       labels,
-      datasets: datasetConf(values, `Count`)
+      datasets: getConf(values, `Count`)
     },
     options: {
       layout: padding,
@@ -190,7 +190,7 @@ const renderTimeChart = (element, points) => {
     fontSize: 16,
     data: {
       labels,
-      datasets: datasetConf(values, `Time spent`)
+      datasets: getConf(values, `Time spent`)
     },
     options: {
       layout: padding,

@@ -181,8 +181,8 @@ export default class PointController {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _commitChanges() {
-    this._onDataChange(this, this._currentEvent, this._eventForm.getData());
+  shake() {
+    this._eventForm.shake();
   }
 
   replaceWithCard() {
@@ -194,6 +194,10 @@ export default class PointController {
     replaceWith(this._eventCard, this._eventForm);
   }
 
+  _commitChanges() {
+    this._onDataChange(this, this._currentEvent, this._eventForm.getData());
+  }
+
   _onEscKeyDown(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
     if (isEscKey) {
@@ -203,9 +207,5 @@ export default class PointController {
       }
       this.replaceWithCard();
     }
-  }
-
-  shake() {
-    this._eventForm.shake();
   }
 }

@@ -200,29 +200,6 @@ export default class PointEdit extends AbstractSmartComponent {
     }
   }
 
-  _applyFlatpickr() {
-    this.clearHandlers();
-    const startTimeElement = this.getElement().querySelector(`.start-time`);
-    const finishTimeElement = this.getElement().querySelector(`.finish-time`);
-    this._flatpickrStart = flatpickr(startTimeElement, {
-      'capture': true,
-      'dateFormat': `d/m/Y H:i`,
-      'defaultDate': this._startTime,
-      'maxDate': this._finishTime,
-      'enableTime': true,
-      'time_24hr': true
-    });
-
-    this._flatpickrFinish = flatpickr(finishTimeElement, {
-      'capture': true,
-      'dateFormat': `d/m/Y H:i`,
-      'defaultDate': this._finishTime,
-      'enableTime': true,
-      'time_24hr': true,
-      'minDate': this._startTime
-    });
-  }
-
   recoveryListeners() {
     this.setSubmitHandler(this._formHandler);
     this.setFavouriteButtonHandler(this._favouriteHandler);
@@ -418,5 +395,28 @@ export default class PointEdit extends AbstractSmartComponent {
   removeElement() {
     this.clearHandlers();
     super.removeElement();
+  }
+
+  _applyFlatpickr() {
+    this.clearHandlers();
+    const startTimeElement = this.getElement().querySelector(`.start-time`);
+    const finishTimeElement = this.getElement().querySelector(`.finish-time`);
+    this._flatpickrStart = flatpickr(startTimeElement, {
+      'capture': true,
+      'dateFormat': `d/m/Y H:i`,
+      'defaultDate': this._startTime,
+      'maxDate': this._finishTime,
+      'enableTime': true,
+      'time_24hr': true
+    });
+
+    this._flatpickrFinish = flatpickr(finishTimeElement, {
+      'capture': true,
+      'dateFormat': `d/m/Y H:i`,
+      'defaultDate': this._finishTime,
+      'enableTime': true,
+      'time_24hr': true,
+      'minDate': this._startTime
+    });
   }
 }
