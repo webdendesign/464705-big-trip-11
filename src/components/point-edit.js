@@ -406,7 +406,7 @@ export default class PointEdit extends AbstractSmartComponent {
       'defaultDate': this._startTime,
       'maxDate': this._finishTime,
       'enableTime': true,
-      'time_24hr': true
+      [`time_24hr`]: true
     });
 
     this._flatpickrFinish = flatpickr(finishTimeElement, {
@@ -414,7 +414,7 @@ export default class PointEdit extends AbstractSmartComponent {
       'dateFormat': `d/m/Y H:i`,
       'defaultDate': this._finishTime,
       'enableTime': true,
-      'time_24hr': true,
+      [`time_24hr`]: true,
       'minDate': this._startTime
     });
   }
