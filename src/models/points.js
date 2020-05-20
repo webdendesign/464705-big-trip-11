@@ -17,19 +17,6 @@ export default class PointModel {
     this._points = Array.from(points);
   }
 
-  _getFilteredPoints() {
-    const nowDate = moment();
-    switch (this._activeFilterType) {
-      case FilterType.ALL:
-        return this._points;
-      case FilterType.FUTURE:
-        return this._points.filter((item) => item.startTime > nowDate);
-      case FilterType.PAST:
-        return this._points.filter((item) => item.startTime < nowDate);
-    }
-    return this._points;
-  }
-
   getPointsAll() {
     return this._points;
   }
@@ -80,10 +67,6 @@ export default class PointModel {
     this._dataChangeHandlers.push(handler);
   }
 
-  _callHandlers(handlers) {
-    handlers.forEach((handler) => handler());
-  }
-
   orderByDate() {
     return this._points.sort((a, b) => {
       if (a.startTime > b.startTime) {
@@ -94,5 +77,22 @@ export default class PointModel {
       }
       return 0;
     });
+  }
+
+  _getFilteredPoints() {
+    const nowDate = moment();
+    switch (this._activeFilterType) {
+      case FilterType.ALL:
+        return this._points;
+      case FilterType.FUTURE:
+        return this._points.filter((item) => item.startTime > nowDate);
+      case FilterType.PAST:
+        return this._points.filter((item) => item.startTime < nowDate);
+    }
+    return this._points;
+  }
+
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 }

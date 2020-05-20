@@ -229,7 +229,7 @@ export default class PointEdit extends AbstractSmartComponent {
       'destination': formCity,
       'type': formType,
       'offers': this.offers,
-      'date_from': formStartTime,
+      'dateFrom': formStartTime,
       'date_to': formFinishTime,
       'duration': formDuration,
       'durationInMs': formDurationMs,
