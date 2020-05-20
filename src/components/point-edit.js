@@ -401,21 +401,33 @@ export default class PointEdit extends AbstractSmartComponent {
     const startTimeElement = this.getElement().querySelector(`.start-time`);
     const finishTimeElement = this.getElement().querySelector(`.finish-time`);
     this._flatpickrStart = flatpickr(startTimeElement, {
-      'capture': true,
-      'dateFormat': `d/m/Y H:i`,
-      'defaultDate': this._startTime,
-      'maxDate': this._finishTime,
-      'enableTime': true,
-      [`time_24hr`]: true
+      // 'capture': true,
+      // 'dateFormat': `d/m/Y H:i`,
+      // 'defaultDate': this._startTime,
+      maxDate: this._finishTime,
+      // 'enableTime': true,
+      [`time_24hr`]: true,
+      altInput: true,
+      dateFormat: `d/m/y H:i`,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._startTime,
+      enableTime: true
     });
 
     this._flatpickrFinish = flatpickr(finishTimeElement, {
-      'capture': true,
-      'dateFormat': `d/m/Y H:i`,
-      'defaultDate': this._finishTime,
-      'enableTime': true,
+      // 'capture': true,
+      // 'dateFormat': `d/m/Y H:i`,
+      // 'defaultDate': this._finishTime,
+      // 'enableTime': true,
+      // [`time_24hr`]: true,
+      // 'minDate': this._startTime
       [`time_24hr`]: true,
-      'minDate': this._startTime
+      altInput: true,
+      dateFormat: `d/m/y H:i`,
+      altFormat: `d/m/y H:i`,
+      defaultDate: this._finishTime,
+      enableTime: true,
+      minDate: this._startTime
     });
   }
 }
